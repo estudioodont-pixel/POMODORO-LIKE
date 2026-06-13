@@ -895,14 +895,13 @@ function loadPersist(){
     if(d.fcInput)g('fc-input').value=d.fcInput;
   }catch{}
 }
-window.savePersist=function savePersist(){
-  try{localStorage.setItem('focus_persist_v2',JSON.stringify({xp:S.xp,tasks:S.tasks,ideas:S.ideas,fcInput:g('fc-input').value}));}catch{}
-}
-
 // ════════════════════════════════════════════════════════════════
 //  DOM
 // ════════════════════════════════════════════════════════════════
 const g=id=>document.getElementById(id);
+window.savePersist=function savePersist(){
+  try{localStorage.setItem('focus_persist_v2',JSON.stringify({xp:S.xp,tasks:S.tasks,ideas:S.ideas,fcInput:g('fc-input').value}));}catch{}
+}
 const $wall=g('wallpaper'),$canvas=g('fx-canvas');
 const $display=g('timer-display'),$sessLabel=g('session-label');
 const $playBtn=g('play-btn'),$playIcon=g('play-icon');
@@ -1674,7 +1673,7 @@ async function loadCloudData() {
         // Estilo de tarjeta
         if (p.cardStyle) {
           S.cardStyle = p.cardStyle;
-          $card.className = timer-card glass-card style-${p.cardStyle};
+          $card.className = `timer-card glass-card style-${p.cardStyle}`;
           document.querySelectorAll('.style-opt').forEach(b => b.classList.toggle('active', b.dataset.style === p.cardStyle));
         }
         // Fuente del timer
@@ -1757,7 +1756,7 @@ window.addEventListener('firebase-ready', () => {
     showToast('Sesión cerrada');
   });
 });
-════════════════════════════════════════════════════════════════
+//════════════════════════════════════════════════════════════════
 //  FONT SIZE CONTROL
 // ════════════════════════════════════════════════════════════════
 const FONT_SIZES = [
