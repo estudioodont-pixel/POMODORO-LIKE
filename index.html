@@ -137,6 +137,11 @@ body.break-mode .session-label{color:var(--break-accent)}
 /* TIMER DISPLAY */
 .timer-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:28px;position:relative}
 #timer-display{font-family:var(--timer-font);font-size:6.8rem;font-weight:300;color:#fff;letter-spacing:-0.04em;line-height:1;text-shadow:0 0 50px rgba(255,255,255,0.18);user-select:none;position:relative;z-index:1;transition:color .5s}
+.font-size-controls{display:flex;align-items:center;gap:8px;margin-bottom:18px;opacity:.7;transition:opacity .2s}
+.font-size-controls:hover{opacity:1}
+.btn-font-size{width:28px;height:28px;border-radius:8px;background:var(--glass-bg);border:1px solid var(--glass-border);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;line-height:1;backdrop-filter:blur(8px);transition:background .2s}
+.btn-font-size:hover{background:var(--glass-hover)}
+.font-size-label{font-size:.68rem;color:var(--text-muted);font-family:'Space Grotesk',sans-serif;min-width:28px;text-align:center}
 #timer-display.pulse{animation:breathe 4s ease-in-out infinite}
 body.break-mode #timer-display.pulse{animation:breathe-break 4s ease-in-out infinite}
 @keyframes breathe{0%,100%{text-shadow:0 0 40px rgba(255,255,255,0.14)}50%{text-shadow:0 0 80px rgba(255,255,255,0.32),0 0 110px var(--accent-glow)}}
@@ -180,7 +185,11 @@ body.break-mode #timer-display.pulse{animation:breathe-break 4s ease-in-out infi
 .xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),rgba(232,196,160,0.6));border-radius:3px;transition:width .6s cubic-bezier(.16,1,.3,1)}
 .xp-labels{display:flex;justify-content:space-between;margin-top:5px}
 .xp-label{font-size:.60rem;color:var(--text-muted)}
-
+.xp-body{overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s,margin .25s}
+.xp-body.collapsed{max-height:0!important;opacity:0;margin-top:0}
+.btn-xp-toggle{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:2px;display:flex;align-items:center;transition:color .2s,transform .25s}
+.btn-xp-toggle:hover{color:#fff}
+.btn-xp-toggle.collapsed{transform:rotate(-90deg)}
 /* ══════════════════════════════════════
    TASKS CARD
 ══════════════════════════════════════ */
@@ -554,6 +563,11 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
         <!-- Session label -->
         <div class="session-label" id="session-label">SESIÓN 1 DE 4</div>
         <!-- Timer display -->
+        <div class="font-size-controls">
+          <button class="btn-font-size" id="font-size-down" title="Reducir fuente">−</button>
+          <span class="font-size-label" id="font-size-label">M</span>
+          <button class="btn-font-size" id="font-size-up" title="Aumentar fuente">+</button>
+        </div>
         <div class="timer-wrap">
           <div id="timer-display">25:00</div>
         </div>
@@ -574,10 +588,12 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
           <div class="dot current"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
       </div>
-
-      <!-- XP / Gamification Bar -->
+<!-- XP / Gamification Bar -->
       <div class="xp-bar-wrap">
         <div class="xp-top">
+          <button class="btn-xp-toggle" id="btn-xp-toggle" title="Minimizar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
           <div class="xp-rank">
             <span class="xp-rank-icon" id="xp-rank-icon">🌱</span>
             <div>
@@ -590,12 +606,14 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
             <span class="xp-streak"><span class="xp-streak-fire">🔥</span><span id="xp-streak">0 días</span></span>
           </div>
         </div>
-        <div class="xp-track">
-          <div class="xp-fill" id="xp-fill" style="width:0%"></div>
-        </div>
-        <div class="xp-labels">
-          <span class="xp-label" id="xp-cur-label">0 pts</span>
-          <span class="xp-label" id="xp-next-label">100 pts para subir</span>
+        <div class="xp-body" id="xp-body" style="max-height:60px">
+          <div class="xp-track" style="margin-top:9px">
+            <div class="xp-fill" id="xp-fill" style="width:0%"></div>
+          </div>
+          <div class="xp-labels">
+            <span class="xp-label" id="xp-cur-label">0 pts</span>
+            <span class="xp-label" id="xp-next-label">100 pts para subir</span>
+          </div>
         </div>
       </div>
 
@@ -1313,15 +1331,33 @@ g('preset-ultra').addEventListener('click',()=>applyPreset('ultra'));
 // ════════════════════════════════════════════════════════════════
 //  TIMER ENGINE
 // ════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+//  WAKE LOCK — evita que la pantalla se apague
+// ════════════════════════════════════════════════════════════════
+let wakeLock = null;
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => { wakeLock = null; });
+  } catch (e) { console.warn('Wake Lock no disponible:', e); }
+}
+function releaseWakeLock() {
+  if (wakeLock) { wakeLock.release(); wakeLock = null; }
+}
+// Re-adquirir si la página vuelve a estar visible (ej: al cambiar de tab y volver)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && S.running) requestWakeLock();
+});
 function tick(){
   if(S.mode==='stopwatch'){S.stopwatchSecs++;render();return;}
   if(S.remaining<=0){clearInterval(S.ticker);S.running=false;soundEnd();onComplete();return;}
   S.remaining--;render();
 }
 function startTimer(){
-  if(S.running)return;S.running=true;S.ticker=setInterval(tick,1000);soundStart();render();
+  if(S.running)return;S.running=true;S.ticker=setInterval(tick,1000);soundStart();render();requestWakeLock();
 }
-function pauseTimer(){clearInterval(S.ticker);S.running=false;render();}
+function pauseTimer(){clearInterval(S.ticker);S.running=false;render();releaseWakeLock();}
 function resetTimer(){
   pauseTimer();
   if(S.mode==='stopwatch')S.stopwatchSecs=0;
@@ -1626,11 +1662,41 @@ async function loadCloudData() {
       if (d.tasks) { S.tasks = d.tasks; S.nextTaskId = Math.max(1,...S.tasks.map(t=>t.id+1),1); }
       if (d.ideas) { S.ideas = d.ideas; S.nextIdeaId = Math.max(1,...S.ideas.map(i=>i.id+1),1); }
       if (d.stats) { try { localStorage.setItem('focus_stats', JSON.stringify(d.stats)); } catch{} }
+
+      // ── Restaurar preferencias ──────────────────────────────
+      if (d.prefs) {
+        const p = d.prefs;
+        // Fondo de pantalla
+        if (p.wallpaper) {
+          const wp = WALLPAPERS.find(w => w.id === p.wallpaper);
+          if (wp && wp.url) setWallpaper(wp.id, wp.url);
+        }
+        // Estilo de tarjeta
+        if (p.cardStyle) {
+          S.cardStyle = p.cardStyle;
+          $card.className = timer-card glass-card style-${p.cardStyle};
+          document.querySelectorAll('.style-opt').forEach(b => b.classList.toggle('active', b.dataset.style === p.cardStyle));
+        }
+        // Fuente del timer
+        if (p.timerFont && FONTS[p.timerFont]) {
+          S.timerFont = p.timerFont;
+          document.documentElement.style.setProperty('--timer-font', FONTS[p.timerFont].family);
+          document.querySelectorAll('.font-opt').forEach(b => b.classList.toggle('active', b.dataset.font === p.timerFont));
+        }
+        // Efecto FX
+        if (p.fx) { S.fx = p.fx; S.fxIntensity = p.fxIntensity ?? 50; setFx(p.fx); }
+        // Preset de tiempos
+        if (p.preset) applyPreset(p.preset);
+        else if (p.durations) { S.durations = p.durations; }
+        // Tamaño de fuente del timer
+        if (p.fontSizeIdx != null && typeof applyFontSize === 'function') applyFontSize(p.fontSizeIdx);
+      }
+      // ───────────────────────────────────────────────────────
+
       renderTasks(); renderIdeas(); renderStats(); renderXP();
-      showToast('☁ Datos cargados desde la nube');
+      showToast('☁️ Preferencias restauradas');
     }
-    // Live sync badge
-    document.getElementById('auth-sync-badge').textContent = '☁ Synced';
+    document.getElementById('auth-sync-badge').textContent = '☁️ Synced';
   } catch(e) { console.warn('Cloud load error:', e); }
 }
 
@@ -1638,8 +1704,18 @@ async function saveCloudData() {
   if (!_currentUser || !_db) return;
   try {
     const stats = loadStats();
+    const prefs = {
+      wallpaper:   S.wallpaper,
+      cardStyle:   S.cardStyle,
+      timerFont:   S.timerFont,
+      fx:          S.fx,
+      fxIntensity: S.fxIntensity,
+      preset:      S.preset,
+      durations:   S.durations,
+      fontSizeIdx: typeof fontSizeIdx !== 'undefined' ? fontSizeIdx : 2,
+    };
     await window._setDoc(window._doc(_db, 'users', _currentUser.uid), {
-      xp: S.xp, tasks: S.tasks, ideas: S.ideas, stats,
+      xp: S.xp, tasks: S.tasks, ideas: S.ideas, stats, prefs,
       updatedAt: new Date().toISOString(), displayName: _currentUser.displayName
     }, { merge: true });
   } catch(e) { console.warn('Cloud save error:', e); }
@@ -1681,7 +1757,47 @@ window.addEventListener('firebase-ready', () => {
     showToast('Sesión cerrada');
   });
 });
+════════════════════════════════════════════════════════════════
+//  FONT SIZE CONTROL
+// ════════════════════════════════════════════════════════════════
+const FONT_SIZES = [
+  { rem: '4.2rem', label: 'XS' },
+  { rem: '5.4rem', label: 'S'  },
+  { rem: '6.8rem', label: 'M'  }, // default
+  { rem: '8.8rem', label: 'L'  },
+  { rem: '11rem',  label: 'XL' },
+];
+let fontSizeIdx = 2; // arranca en M (6.8rem)
 
+function applyFontSize(idx) {
+  fontSizeIdx = Math.max(0, Math.min(FONT_SIZES.length - 1, idx));
+  $display.style.fontSize = FONT_SIZES[fontSizeIdx].rem;
+  g('font-size-label').textContent = FONT_SIZES[fontSizeIdx].label;
+  g('font-size-down').disabled = fontSizeIdx === 0;
+  g('font-size-up').disabled   = fontSizeIdx === FONT_SIZES.length - 1;
+  try { localStorage.setItem('focus_font_size_idx', fontSizeIdx); } catch {}
+}
+
+g('font-size-up').addEventListener('click',   () => applyFontSize(fontSizeIdx + 1));
+g('font-size-down').addEventListener('click', () => applyFontSize(fontSizeIdx - 1));
+
+// Restaurar tamaño guardado
+try {
+  const saved = localStorage.getItem('focus_font_size_idx');
+  if (saved !== null) applyFontSize(+saved);
+} catch {}
+// XP BAR TOGGLE
+(function(){
+  const btn = g('btn-xp-toggle');
+  const body = g('xp-body');
+  let open = true;
+  btn.addEventListener('click', () => {
+    open = !open;
+    body.classList.toggle('collapsed', !open);
+    btn.classList.toggle('collapsed', !open);
+    btn.title = open ? 'Minimizar' : 'Expandir';
+  });
+})();
 loadPersist();
 buildWpGrid();
 setWallpaper(WALLPAPERS[0].id,WALLPAPERS[0].url);
