@@ -14,16 +14,17 @@ import { getFirestore, doc, setDoc, getDoc, onSnapshot } from 'https://www.gstat
 
 // ── Firebase config ──────────────────────────────────────────────
 // NOTE: Replace this with your own Firebase project config.
+const firebaseConfig = {
+  apiKey: "AIzaSyADxxoufKHiJw5tHMPRdmhP33gOrdjW6r4",
+  authDomain: "mi-pomodoro-88cbf.firebaseapp.com",
+  projectId: "mi-pomodoro-88cbf",
+  storageBucket: "mi-pomodoro-88cbf.firebasestorage.app",
+  messagingSenderId: "436268003722",
+  appId: "1:436268003722:web:de72880432761f73fb5873",
+  measurementId: "G-JDCYK6ND7H"
+};
 // Create one free at https://console.firebase.google.com
 // Enable Authentication > Google provider, and Firestore Database.
-const firebaseConfig = {
-  apiKey: "AIzaSyDEMO_REPLACE_WITH_YOUR_KEY",
-  authDomain: "focus-pomodoro-demo.firebaseapp.com",
-  projectId: "focus-pomodoro-demo",
-  storageBucket: "focus-pomodoro-demo.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:0000000000000000000000"
-};
 
 let app, auth, db, currentUser = null, unsubscribeSync = null;
 
