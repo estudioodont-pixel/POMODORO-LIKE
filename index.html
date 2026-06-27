@@ -674,10 +674,10 @@ header.hidden{
   background:rgba(255,255,255,0.12);
   color:rgba(255,255,255,0.80);
 }
-body.show-ui #btn-quote-toggle{opacity:1;}
+body.show-ui #btn-aesthetic{opacity:1;}
+#btn-aesthetic{opacity:0.5!important;}
+#btn-aesthetic:hover{opacity:1!important;}
 body.quote-hidden .quote-bar{
-  opacity:0!important;
-  pointer-events:none!important;
   transition:opacity .4s;
 }
 .quote-bar{
@@ -2329,13 +2329,27 @@ let uiHideTimer=null;
 function showUI(){
   document.body.classList.add('show-ui');
   clearTimeout(uiHideTimer);
-  uiHideTimer=setTimeout(()=>{
-    document.body.classList.remove('show-ui');
-  },3000);
+  // Solo ocultar si el timer está corriendo
+  if(S.running){
+    uiHideTimer=setTimeout(()=>{
+      document.body.classList.remove('show-ui');
+    },3000);
+  }
+}
+function onTimerStart(){
+  // Cuando arranca el timer, activar auto-hide
+  showUI();
+}
+function onTimerPause(){
+  // Cuando pausa, mostrar UI permanentemente
+  clearTimeout(uiHideTimer);
+  document.body.classList.add('show-ui');
 }
 document.addEventListener('mousemove', showUI);
 document.addEventListener('touchstart', showUI);
-showUI(); // show on load
+showUI();
+
+  // show on load
 
 // ── Aesthetic toggle ─────────────────────────────────────────────
 // ── Keyboard shortcut: A = aesthetic, Q = quote ──────────────────
