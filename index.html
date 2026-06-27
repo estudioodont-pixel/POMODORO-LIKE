@@ -54,7 +54,7 @@ function tryInitFirebase() {
 }
 tryInitFirebase();
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=Playfair+Display:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=Playfair+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&family=Nunito:wght@200;300;400;600;700;800&family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -79,7 +79,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;overflow:hidden}
 body.break-mode #wallpaper::after{background:linear-gradient(160deg,rgba(10,30,25,0.52) 0%,rgba(5,25,35,0.40) 50%,rgba(10,35,25,0.48) 100%)}
 #fx-canvas{position:fixed;inset:0;z-index:1;pointer-events:none}
 
-#app{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;padding:80px 16px 24px}
+#app{position:relative;z-index:2;height:100vh;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;overflow-y:auto;padding:80px 24px 24px}
 
 /* HEADER */
 header{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;z-index:20}
@@ -92,9 +92,9 @@ header{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justi
 .hdr-btn.icon-only{padding:8px 10px}
 
 /* LAYOUT */
-.main-layout{display:flex;gap:20px;align-items:flex-start;width:100%;max-width:980px}
-.col-timer{display:flex;flex-direction:column;align-items:center;gap:14px;flex:0 0 auto}
-.col-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.main-layout{display:grid;grid-template-columns:420px 1fr;gap:24px;align-items:start;width:100%;max-width:1080px;margin:24px auto 0}
+.col-timer{display:flex;flex-direction:column;align-items:center;gap:14px}
+.col-right{display:flex;flex-direction:column;gap:12px;min-width:0}
 
 /* GLASS CARD */
 .glass-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:24px;backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));box-shadow:0 6px 40px rgba(0,0,0,0.20),0 1px 0 rgba(255,255,255,0.07) inset}
@@ -110,13 +110,25 @@ body.break-mode .timer-card.style-glass{background:rgba(20,50,40,0.45);border-co
 .timer-card.style-none .btn-icon{background:transparent;border:1px solid rgba(255,255,255,0.22)}
 
 /* MINIMIZED */
-body.minimized .col-right,body.minimized .quote-bar{display:none!important}
+body.minimized .col-right,body.minimized .quote-bar,body.minimized .xp-bar-wrap{display:none!important}
 body.minimized .timer-card{padding:20px 32px 28px;width:340px}
 body.minimized #timer-display{font-size:5.8rem}
 body.minimized .tabs{margin-bottom:24px}
 body.minimized .timer-wrap{margin-bottom:22px}
 body.minimized #minimize-btn svg.icon-min{display:none}
 body.minimized #minimize-btn svg.icon-max{display:block!important}
+
+/* FOCUS MODE */
+body.timer-running .tabs,
+body.timer-running .mode-presets,
+body.timer-running .session-label,
+body.timer-running .font-size-controls,
+body.timer-running .session-dots,
+body.timer-running .timer-edit-hint,
+body.timer-running .col-right,
+body.timer-running .xp-bar-wrap{
+  display:none!important;
+}
 
 /* TABS */
 .tabs{display:flex;gap:5px;background:rgba(0,0,0,0.17);border-radius:13px;padding:4px;margin-bottom:20px;width:100%}
@@ -136,7 +148,7 @@ body.break-mode .session-label{color:var(--break-accent)}
 
 /* TIMER DISPLAY */
 .timer-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:28px;position:relative}
-#timer-display{font-family:var(--timer-font);font-size:6.8rem;font-weight:300;color:#fff;letter-spacing:-0.04em;line-height:1;text-shadow:0 0 50px rgba(255,255,255,0.18);user-select:none;position:relative;z-index:1;transition:color .5s}
+#timer-display{font-family:var(--timer-font);font-size:6.8rem;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing: 0.02em;color:#fff;letter-spacing:-0.04em;line-height:1;text-shadow:0 0 50px rgba(255,255,255,0.18);user-select:none;position:relative;z-index:1;transition:color .5s}
 .font-size-controls{display:flex;align-items:center;gap:8px;margin-bottom:18px;opacity:.7;transition:opacity .2s}
 .font-size-controls:hover{opacity:1}
 .btn-font-size{width:28px;height:28px;border-radius:8px;background:var(--glass-bg);border:1px solid var(--glass-border);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;line-height:1;backdrop-filter:blur(8px);transition:background .2s}
@@ -368,7 +380,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 .fx-opt.active{background:rgba(232,196,160,0.14);border-color:var(--accent);color:var(--accent)}
 .fx-opt .fe{font-size:1.3rem;display:block;margin-bottom:4px;line-height:1}
 .fx-intensity{margin-top:12px}
-.wp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.wp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .wp-thumb{aspect-ratio:16/9;border-radius:9px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .15s;position:relative}
 .wp-thumb:hover{transform:scale(1.04)}
 .wp-thumb.selected{border-color:var(--accent)}
@@ -471,6 +483,238 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
 }
 @media(prefers-reduced-motion:reduce){#timer-display.pulse{animation:none}}
 :fullscreen #app,:-webkit-full-screen #app{height:100vh}
+/* Editable timer display */
+#timer-display.editable-mode{
+  cursor:text;
+  outline:none;
+  border-bottom:2px solid var(--accent);
+  padding-bottom:4px;
+  caret-color:var(--accent);
+  min-width:4ch;
+  text-align:center;
+}
+.timer-edit-hint{
+  font-size:.68rem;color:var(--accent);
+  letter-spacing:.08em;text-transform:uppercase;
+  margin-top:6px;height:14px;
+  transition:opacity .2s;opacity:0;text-align:center;
+}
+.timer-edit-hint.visible{opacity:1;}
+/* ══ QUOTE WIDGET — draggable & resizable ══ */
+.quote-bar{
+  position:fixed;
+  bottom:28px;
+  left:50%;
+  transform:translateX(-50%);
+  width:420px;
+  min-width:220px;
+  max-width:90vw;
+  min-height:52px;
+  padding:14px 18px 14px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.13);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  cursor:grab;
+  user-select:none;
+  resize:both;
+  overflow:hidden;
+  z-index:15;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  box-shadow:0 4px 24px rgba(0,0,0,0.18);
+  transition:box-shadow .2s, border-color .2s;
+}
+.quote-bar:active{cursor:grabbing;box-shadow:0 8px 36px rgba(0,0,0,0.32);border-color:rgba(255,255,255,0.22)}
+.quote-bar-handle{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.quote-bar-dots{
+  display:flex;gap:4px;flex-shrink:0;
+}
+.quote-bar-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,0.20);
+}
+.quote-bar-label{
+  font-size:.60rem;color:rgba(255,255,255,0.30);
+  text-transform:uppercase;letter-spacing:.1em;
+  font-family:'Inter',sans-serif;
+}
+.btn-quote-next{
+  background:none;border:none;color:rgba(255,255,255,0.28);
+  cursor:pointer;padding:2px 5px;border-radius:6px;
+  font-size:.75rem;transition:color .2s;flex-shrink:0;
+  line-height:1;
+}
+.btn-quote-next:hover{color:var(--accent)}
+.quote-text{
+  font-size:.82rem;
+  color:rgba(255,255,255,0.72);
+  font-style:italic;
+  line-height:1.55;
+  transition:opacity .4s;
+  cursor:text;
+  user-select:text;
+  flex:1;
+}
+.quote-text.fade{opacity:0}
+.quote-ref{
+  font-size:.68rem;
+  color:var(--accent);
+  font-family:'Space Grotesk',sans-serif;
+  font-style:normal;
+  opacity:.85;
+  text-align:right;
+  transition:opacity .4s;
+}
+.quote-ref.fade{opacity:0}
+/* Ocultar con minimizar */
+body.minimized .quote-bar{display:none!important}
+/* ══ AESTHETIC MODE ══ */
+body.aesthetic .col-right,
+body.aesthetic .xp-bar-wrap,
+body.aesthetic header{
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .6s ease;
+}
+body.aesthetic .col-timer{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:10;
+}
+body.aesthetic .main-layout{
+  pointer-events:none;
+}
+body.aesthetic .col-timer{
+  pointer-events:all;
+}
+body.aesthetic .timer-card,
+body.aesthetic .xp-bar-wrap{
+  background:transparent!important;
+  border:none!important;
+  backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+body.aesthetic #timer-display{
+  opacity:0.85;
+}
+body.aesthetic .col-timer{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:10;
+}
+body.aesthetic .main-layout{
+  pointer-events:none;
+}
+body.aesthetic .col-timer{
+  pointer-events:all;
+}
+body.aesthetic .quote-bar{
+  display:flex!important;
+}
+
+/* ══ HEADER AUTO-HIDE ══ */
+header{
+  transition:opacity .4s ease;
+}
+header.hidden{
+  opacity:0;
+  pointer-events:none;
+}
+
+/* ══ BOTONES HEADER — ultra discretos ══ */
+.hdr-btn{
+  background:rgba(255,255,255,0.04)!important;
+  border:1px solid rgba(255,255,255,0.08)!important;
+  color:rgba(255,255,255,0.35)!important;
+  backdrop-filter:none!important;
+  transition:opacity .3s, background .3s, color .3s!important;
+}
+.hdr-btn:hover{
+  background:rgba(255,255,255,0.10)!important;
+  color:rgba(255,255,255,0.85)!important;
+  transform:none!important;
+}
+.logo{
+  opacity:.3;
+  transition:opacity .4s;
+}
+.logo:hover{opacity:.85}
+
+/* ══ QUOTE TOGGLE BTN ══ */
+#btn-quote-toggle{
+  position:fixed;
+  bottom:28px;
+  right:28px;
+  z-index:16;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  color:rgba(255,255,255,0.30);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:opacity .3s, background .3s, color .3s;
+  opacity:0;
+  font-size:.75rem;
+  backdrop-filter:blur(8px);
+}
+#btn-quote-toggle:hover{
+  background:rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.80);
+}
+body.show-ui #btn-quote-toggle{opacity:1;}
+body.quote-hidden .quote-bar{
+  opacity:0!important;
+  pointer-events:none!important;
+  transition:opacity .4s;
+}
+.quote-bar{
+  transition:opacity .4s;
+}
+
+/* ══ AESTHETIC TOGGLE BTN ══ */
+#btn-aesthetic{
+  position:fixed;
+  bottom:28px;
+  left:28px;
+  z-index:16;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.10);
+  color:rgba(255,255,255,0.30);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:opacity .3s, background .3s, color .3s;
+  opacity:0;
+  font-size:.82rem;
+  backdrop-filter:blur(8px);
+}
+#btn-aesthetic:hover{
+  background:rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.80);
+}
+body.show-ui #btn-aesthetic{opacity:1;}
+body.aesthetic #btn-aesthetic{
+  opacity:1!important;
+  color:var(--accent)!important;
+  border-color:rgba(232,196,160,0.25)!important;
+}
 </style>
 </head>
 <body>
@@ -490,27 +734,6 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
     <div class="health-alert" id="health-alert">
       <span class="health-icon">🙆</span>
       <div class="health-text">Estira la espalda y las manos. Respira hondo y mueve los hombros — tu cuerpo lo agradece.</div>
-    </div>
-    <!-- Flashcard setup -->
-    <div class="fc-setup" id="fc-setup">
-      <span class="fc-setup-label">Flash Cards</span>
-      <textarea class="fc-textarea" id="fc-input" placeholder="término : definición&#10;sublingual : bajo la lengua&#10;orthodontic : relating to teeth alignment&#10;..."></textarea>
-      <div class="fc-hint">Formato: <strong>término : definición</strong> — una por línea. Sin definición = solo término visible.</div>
-      <button class="btn-fc-start" id="btn-fc-start">Estudiar →</button>
-    </div>
-    <!-- Flashcard display -->
-    <div class="fc-display" id="fc-display">
-      <div class="fc-card" id="fc-card" title="Clic para ver definición">
-        <div class="fc-card-term" id="fc-term">—</div>
-        <div class="fc-card-def" id="fc-def">—</div>
-        <div class="fc-card-hint" id="fc-hint">toca para voltear</div>
-      </div>
-      <div class="fc-nav">
-        <button class="btn-fc-nav" id="btn-fc-prev">← Anterior</button>
-        <span class="fc-progress" id="fc-progress">1 / 1</span>
-        <button class="btn-fc-nav" id="btn-fc-next">Siguiente →</button>
-      </div>
-      <div style="text-align:center"><button class="btn-fc-reset" id="btn-fc-reset">Editar tarjetas</button></div>
     </div>
   </div>
 </div>
@@ -571,6 +794,7 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
         <div class="timer-wrap">
           <div id="timer-display">25:00</div>
         </div>
+        <div class="timer-edit-hint" id="timer-edit-hint">↑ clic para editar · Enter para confirmar</div>
         <!-- Controls -->
         <div class="controls">
           <button class="btn-icon" id="skip-btn" title="Saltar">
@@ -603,7 +827,7 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
           </div>
           <div class="xp-right">
             <span class="xp-pts" id="xp-pts">0 pts</span>
-            <span class="xp-streak"><span class="xp-streak-fire">🔥</span><span id="xp-streak">0 días</span></span>
+            <span class="xp-streak" style="display:none"><span class="xp-streak-fire">🔥</span><span id="xp-streak">0 días</span></span>
           </div>
         </div>
         <div class="xp-body" id="xp-body" style="max-height:60px">
@@ -617,11 +841,22 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
         </div>
       </div>
 
-      <!-- Quote -->
-      <div class="quote-bar">
-        <div class="quote-text" id="quote-text"></div>
-      </div>
+    </div><!-- /col-timer -->
+
+<!-- QUOTE WIDGET — independiente, fuera del col-timer -->
+<div class="quote-bar" id="quote-bar">
+  <div class="quote-bar-handle" id="quote-handle">
+    <div class="quote-bar-dots">
+      <div class="quote-bar-dot"></div>
+      <div class="quote-bar-dot"></div>
+      <div class="quote-bar-dot"></div>
     </div>
+    <span class="quote-bar-label">versículo</span>
+    <button class="btn-quote-next" id="btn-quote-next" title="Siguiente versículo">›</button>
+  </div>
+  <div class="quote-text" id="quote-text"></div>
+  <div class="quote-ref" id="quote-ref"></div>
+</div>
 
     <!-- RIGHT COLUMN -->
     <div class="col-right" id="col-right">
@@ -670,35 +905,7 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
         </div>
       </div>
 
-      <!-- STATS -->
-      <div class="stats-card glass-card">
-        <div class="stats-header">
-          <span class="stats-title">📊 Estadísticas</span>
-          <div class="stats-header-btns">
-            <button class="btn-export" id="btn-export">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Exportar
-            </button>
-            <button class="btn-clear-stats" id="btn-clear-stats">Limpiar</button>
-          </div>
-        </div>
-        <div class="stats-summary">
-          <div class="stat-pill"><div class="stat-pill-num" id="stat-total-pomos">0</div><div class="stat-pill-lbl">Pomodoros</div></div>
-          <div class="stat-pill"><div class="stat-pill-num" id="stat-total-mins">0</div><div class="stat-pill-lbl">Minutos</div></div>
-          <div class="stat-pill"><div class="stat-pill-num" id="stat-total-days">0</div><div class="stat-pill-lbl">Días activos</div></div>
-        </div>
-        <div class="stats-chart-wrap">
-          <div class="stats-chart-title">Últimos 7 días</div>
-          <div class="bar-chart" id="bar-chart"></div>
-        </div>
-        <div class="stats-table-wrap">
-          <table id="stats-table">
-            <thead><tr><th>Fecha</th><th>Pomodoros</th><th>Cronómetros</th><th>Min. focus</th></tr></thead>
-            <tbody id="stats-tbody"></tbody>
-          </table>
-          <div class="stats-empty" id="stats-empty">Completa tu primer Pomodoro 🍅</div>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>
@@ -771,6 +978,9 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
       <button class="fx-opt" data-fx="stars"><span class="fe">⭐</span>Estrellas</button>
       <button class="fx-opt" data-fx="bubbles"><span class="fe">🫧</span>Burbujas</button>
       <button class="fx-opt" data-fx="dust"><span class="fe">🌟</span>Polvo</button>
+      <button class="fx-opt" data-fx="rainsoft"><span class="fe">🌂</span>Lluvia</button>
+      <button class="fx-opt" data-fx="snowdrift"><span class="fe">🌨️</span>Nieve lenta</button>
+      <button class="fx-opt" data-fx="spirits"><span class="fe">🌿</span>Ghibli</button>
     </div>
     <div class="fx-intensity" id="fx-intensity-wrap" style="display:none">
       <div class="setting-row" style="margin-bottom:7px"><span class="setting-name">Intensidad</span><span class="setting-val" id="val-fx-int">50%</span></div>
@@ -783,6 +993,8 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
       <button class="font-opt active" data-font="grotesk"><span class="fp" style="font-family:'Space Grotesk',sans-serif">25</span>Sans</button>
       <button class="font-opt" data-font="serif"><span class="fp" style="font-family:'Playfair Display',serif">25</span>Serif</button>
       <button class="font-opt" data-font="mono"><span class="fp" style="font-family:'JetBrains Mono',monospace">25</span>Mono</button>
+      <button class="font-opt" data-font="nura"><span class="fp" style="font-family:'Comfortaa',sans-serif;font-weight:300">25</span>Nura</button>
+      <button class="font-opt" data-font="nunito"><span class="fp" style="font-family:'Nunito',sans-serif;font-weight:200">25</span>Nunito</button>
     </div>
   </div>
   <div class="s-section">
@@ -810,6 +1022,32 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
       <button class="btn-apply" id="apply-custom-url">Aplicar</button>
     </div>
   </div>
+  <div class="s-section">
+    <span class="s-label">📊 Estadísticas</span>
+    <div class="stats-header-btns" style="display:flex;gap:7px;margin-bottom:14px">
+      <button class="btn-export" id="btn-export" style="flex:1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar
+      </button>
+      <button class="btn-clear-stats" id="btn-clear-stats">Limpiar</button>
+    </div>
+    <div class="stats-summary">
+      <div class="stat-pill"><div class="stat-pill-num" id="stat-total-pomos">0</div><div class="stat-pill-lbl">Pomodoros</div></div>
+      <div class="stat-pill"><div class="stat-pill-num" id="stat-total-mins">0</div><div class="stat-pill-lbl">Minutos</div></div>
+      <div class="stat-pill"><div class="stat-pill-num" id="stat-total-days">0</div><div class="stat-pill-lbl">Días activos</div></div>
+    </div>
+    <div class="stats-chart-wrap" style="margin-top:14px">
+      <div class="stats-chart-title">Últimos 7 días</div>
+      <div class="bar-chart" id="bar-chart"></div>
+    </div>
+    <div class="stats-table-wrap">
+      <table id="stats-table">
+        <thead><tr><th>Fecha</th><th>Pomodoros</th><th>Cronómetros</th><th>Min. focus</th></tr></thead>
+        <tbody id="stats-tbody"></tbody>
+      </table>
+      <div class="stats-empty" id="stats-empty">Completa tu primer Pomodoro 🍅</div>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -819,28 +1057,93 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
 //  CONSTANTS
 // ════════════════════════════════════════════════════════════════
 const WALLPAPERS=[
-  {id:'w1',label:'Colinas', url:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w2',label:'Lago',    url:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w3',label:'Bosque',  url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w4',label:'Amanecer',url:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w5',label:'Montaña', url:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&auto=format&fit=crop&q=80'},
-  {id:'custom',label:'URL…',url:null},
+  // ── Fotos aesthetic (Unsplash) ──
+  {id:'w1', label:'Colinas',     type:'img', url:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w2', label:'Lago',        type:'img', url:'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w3', label:'Bosque',      type:'img', url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w4', label:'Amanecer',    type:'img', url:'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w5', label:'Montaña',     type:'img', url:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w6', label:'Café lofi',   type:'img', url:'https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w7', label:'Lluvia',      type:'img', url:'https://images.unsplash.com/photo-1428592953211-077101b2021b?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w8', label:'Cerezo',      type:'img', url:'https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w9', label:'Noche',       type:'img', url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w10',label:'Niebla',      type:'img', url:'https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w11',label:'Ventana',     type:'img', url:'https://images.unsplash.com/photo-1517898717281-8e4385a41802?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w13',label:'Estudio',     type:'img', url:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w14',label:'Mar bruma',   type:'img', url:'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w15',label:'Tren',        type:'img', url:'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w11', label:'Montañas Nevadas', type:'img', url:'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w12', label:'Ciudad Neón',      type:'img', url:'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w13', label:'Estudio Cálido',   type:'img', url:'https://images.unsplash.com/photo-1517842645767-c639042777db?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w14', label:'Atardecer Lofi',   type:'img', url:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w16', label:'Bosque Brumoso',   type:'img', url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w17', label:'Luces Nocturnas',  type:'img', url:'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w1',  label:'Bosque de Niebla', type:'img', url:'https://images.unsplash.com/photo-1609678816248-132228a8658b?q=80&w=870&auto=format&fit=crop'},
+  {id:'w2',  label:'Cumbre Nevada',          type:'img', url:'https://images.unsplash.com/photo-1614021926166-f5e89b0bf933?q=80&w=774&auto=format&fit=crop'},
+  {id:'w3',  label:'Mar de Nubes',           type:'img', url:'https://images.unsplash.com/photo-1480561807109-e2aa33f23be8?q=80&w=773&auto=format&fit=crop'},
+  {id:'w4',  label:'Amanecer Dorado',        type:'img', url:'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=870&auto=format&fit=crop'},
+  {id:'w5',  label:'Rocas y Océano',         type:'img', url:'https://images.unsplash.com/photo-1529988885170-6dc8ce34ce6d?q=80&w=774&auto=format&fit=crop'},
+  {id:'w7',  label:'Atardecer',              type:'img', url:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w8',  label:'Gato Místico',           type:'img', url:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w10', label:'Ciudad Nocturna',        type:'img', url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w11', label:'Épico',                  type:'img', url:'https://wallpapercave.com/wp/wp7982608.jpg'},
+  {id:'w12', label:'Arte Fantasía',          type:'img', url:'https://images4.alphacoders.com/132/thumb-1920-1321259.png'},
+  {id:'w13', label:'Universo Cósmico',       type:'img', url:'https://images3.alphacoders.com/132/thumb-1920-1322308.jpeg'},
+  {id:'w14', label:'Anime',                  type:'img', url:'https://images5.alphacoders.com/134/thumb-1920-1344548.png'},
+  {id:'w15', label:'Horizonte Futurista',    type:'img', url:'https://images6.alphacoders.com/138/thumb-1920-1383144.png'},
+  {id:'custom', label:'URL…',               type:'img', url:null},
 ];
 const QUOTES=[
-  "El secreto de empezar es dejar de hablar y empezar a hacer.",
-  "Un paso pequeño hoy, un gran logro mañana.",
-  "La concentración es la raíz de todo lo que hay de grande en el ser humano.",
-  "Haz lo que puedas, con lo que tengas, donde estés.",
-  "La disciplina es el puente entre metas y logros.",
-  "El tiempo que disfrutas perder, no es tiempo perdido.",
-  "Tu único límite eres tú mismo.",
-  "Pequeños progresos siguen siendo progresos.",
-  "El esfuerzo de hoy es el éxito de mañana.",
-  "Cada Pomodoro te acerca a tu meta.",
-  "La calidad del silencio es proporcional a la calidad del pensamiento.",
-  "Profundidad sobre velocidad. Siempre.",
+  {t:"El secreto de empezar es dejar de hablar y empezar a hacer.",},
+  {t:"Un paso pequeño hoy, un gran logro mañana.",},
+  {t:"La concentración es la raíz de todo lo que hay de grande en el ser humano.",},
+  {t:"Haz lo que puedas, con lo que tengas, donde estés.",},
+  {t:"La disciplina es el puente entre metas y logros.",},
+  {t:"El tiempo que disfrutas perder, no es tiempo perdido.",},
+  {t:"Tu único límite eres tú mismo.",},
+  {t:"Pequeños progresos siguen siendo progresos.",},
+  {t:"El esfuerzo de hoy es el éxito de mañana.",},
+  {t:"Cada Pomodoro te acerca a tu meta.",},
+  {t:"La calidad del silencio es proporcional a la calidad del pensamiento.",},
+  {t:"Profundidad sobre velocidad. Siempre.",},
+  {t:"Todo lo puedo en Cristo que me fortalece.",r:"Filipenses 4:13"},
+  {t:"El Señor es mi pastor; nada me faltará.",r:"Salmos 23:1"},
+  {t:"Porque yo sé los planes que tengo para ustedes, planes de bienestar y no de calamidad.",r:"Jeremías 29:11"},
+  {t:"No se amolden al mundo actual, sino sean transformados mediante la renovación de su mente.",r:"Romanos 12:2"},
+  {t:"Confía en el Señor de todo tu corazón, y no te apoyes en tu propia prudencia.",r:"Proverbios 3:5"},
+  {t:"Sean fuertes y valientes. No teman ni se asusten, porque el Señor su Dios estará con ustedes.",r:"Josué 1:9"},
+  {t:"El Señor te guardará de todo mal; él guardará tu vida.",r:"Salmos 121:7"},
+  {t:"Buscad primeramente el reino de Dios y su justicia, y todas estas cosas os serán añadidas.",r:"Mateo 6:33"},
+  {t:"No se inquieten por nada; en toda ocasión, con oración y ruego, presenten sus peticiones a Dios.",r:"Filipenses 4:6"},
+  {t:"El que comenzó tan buena obra en ustedes la irá perfeccionando hasta el día de Cristo Jesús.",r:"Filipenses 1:6"},
+  {t:"Echa sobre el Señor tu carga, y él te sustentará.",r:"Salmos 55:22"},
+  {t:"Los que esperan en el Señor renovarán sus fuerzas; volarán como las águilas.",r:"Isaías 40:31"},
+  {t:"Lámpara es a mis pies tu palabra, y lumbrera a mi camino.",r:"Salmos 119:105"},
+  {t:"El amor es paciente, es bondadoso. El amor no es envidioso ni jactancioso ni orgulloso.",r:"1 Corintios 13:4"},
+  {t:"Porque de tal manera amó Dios al mundo, que dio a su Hijo unigénito.",r:"Juan 3:16"},
+  {t:"Yo soy el camino, la verdad y la vida. Nadie viene al Padre sino por mí.",r:"Juan 14:6"},
+  {t:"Vengan a mí todos ustedes que están cansados y agobiados, y yo les daré descanso.",r:"Mateo 11:28"},
+  {t:"El Señor está cerca de los quebrantados de corazón, y salva a los de espíritu abatido.",r:"Salmos 34:18"},
+  {t:"Somos hechura de Dios, creados en Cristo Jesús para buenas obras.",r:"Efesios 2:10"},
+  {t:"Todo lo que hagan, háganlo de corazón, como para el Señor y no para los hombres.",r:"Colosenses 3:23"},
+  {t:"La paz de Dios, que sobrepasa todo entendimiento, guardará sus corazones y mentes en Cristo.",r:"Filipenses 4:7"},
+  {t:"Dios es nuestro amparo y fortaleza, nuestra ayuda segura en momentos de angustia.",r:"Salmos 46:1"},
+  {t:"Reconócelo en todos tus caminos, y él enderezará tus veredas.",r:"Proverbios 3:6"},
+  {t:"El Señor mismo marchará al frente de ti y estará contigo; nunca te dejará ni te abandonará.",r:"Deuteronomio 31:8"},
+  {t:"Pedid, y se os dará; buscad, y hallaréis; llamad, y se os abrirá.",r:"Mateo 7:7"},
+  {t:"En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios.",r:"Juan 1:1"},
+  {t:"El fruto del Espíritu es amor, alegría, paz, paciencia, amabilidad, bondad, fidelidad.",r:"Gálatas 5:22"},
+  {t:"No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo.",r:"Isaías 41:10"},
+  {t:"Con amor eterno te he amado; por eso te sigo con fidelidad.",r:"Jeremías 31:3"},
+  {t:"Jehová es mi luz y mi salvación; ¿a quién temeré?",r:"Salmos 27:1"},
 ];
-const FONTS={grotesk:{family:"'Space Grotesk',sans-serif"},serif:{family:"'Playfair Display',serif"},mono:{family:"'JetBrains Mono',monospace"}};
+const FONTS={
+  grotesk:{family:"'Space Grotesk',sans-serif",  weight:"700"},
+  serif:  {family:"'Playfair Display',serif",     weight:"700"},
+  mono:   {family:"'JetBrains Mono',monospace",   weight:"600"},
+  nura:   {family:"'Comfortaa',sans-serif",        weight:"700"},
+  nunito: {family:"'Nunito',sans-serif",           weight:"800"},
+};
 
 // ════════════════════════════════════════════════════════════════
 //  GAMIFICATION — RANKS
@@ -877,10 +1180,6 @@ const S={
   // break panel state
   breakPanelOpen:false,
   healthAlertShown:false,
-  // flashcards
-  fcCards:[],
-  fcIdx:0,
-  fcFlipped:false,
 };
 
 // ════════════════════════════════════════════════════════════════
@@ -892,7 +1191,6 @@ function loadPersist(){
     if(d.xp!=null)S.xp=d.xp;
     if(d.tasks)S.tasks=d.tasks,S.nextTaskId=Math.max(1,...S.tasks.map(t=>t.id+1),1);
     if(d.ideas)S.ideas=d.ideas,S.nextIdeaId=Math.max(1,...S.ideas.map(i=>i.id+1),1);
-    if(d.fcInput)g('fc-input').value=d.fcInput;
   }catch{}
 }
 // ════════════════════════════════════════════════════════════════
@@ -900,7 +1198,7 @@ function loadPersist(){
 // ════════════════════════════════════════════════════════════════
 const g=id=>document.getElementById(id);
 window.savePersist=function savePersist(){
-  try{localStorage.setItem('focus_persist_v2',JSON.stringify({xp:S.xp,tasks:S.tasks,ideas:S.ideas,fcInput:g('fc-input').value}));}catch{}
+  try{localStorage.setItem('focus_persist_v2',JSON.stringify({xp:S.xp,tasks:S.tasks,ideas:S.ideas}));}catch{}
 }
 const $wall=g('wallpaper'),$canvas=g('fx-canvas');
 const $display=g('timer-display'),$sessLabel=g('session-label');
@@ -943,7 +1241,98 @@ const todayKey=()=>new Date().toISOString().slice(0,10);
 const fmtDate=k=>{const[y,m,d]=k.split('-');const names=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];return`${+d} ${names[+m-1]}`;};
 const shortDay=k=>{const days=['Do','Lu','Ma','Mi','Ju','Vi','Sá'];return days[new Date(k+'T12:00').getDay()];};
 const nowHM=()=>{const n=new Date();return`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;};
+// ════════════════════════════════════════════════════════════════
+//  EDITABLE TIMER — clic directo sobre el display
+// ════════════════════════════════════════════════════════════════
+let timerEditActive=false;
 
+$display.addEventListener('click',()=>{
+  // No entrar en modo edición si está corriendo o es cronómetro
+  if(S.running||S.mode==='stopwatch')return;
+  enterTimerEdit();
+});
+
+function enterTimerEdit(){
+  if(timerEditActive)return;
+  timerEditActive=true;
+  $display.contentEditable='true';
+  $display.classList.add('editable-mode');
+  g('timer-edit-hint').classList.add('visible');
+  // Seleccionar todo el texto al entrar
+  const range=document.createRange();
+  range.selectNodeContents($display);
+  const sel=window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+function commitTimerEdit(){
+  if(!timerEditActive)return;
+  timerEditActive=false;
+  $display.contentEditable='false';
+  $display.classList.remove('editable-mode');
+  g('timer-edit-hint').classList.remove('visible');
+
+  const raw=$display.textContent.trim();
+  const parsed=parseTimerInput(raw);
+
+  if(parsed!==null && parsed>=10 && parsed<=7200){
+    S.remaining=parsed;
+    S.total=parsed;
+    // Actualizar duración del modo actual para que el reset también use el nuevo valor
+    if(S.mode!=='stopwatch') S.durations[S.mode]=parsed;
+    render();
+    showToast(`Temporizador ajustado a ${fmt(parsed)} ✓`);
+  } else {
+    // Valor inválido — restaurar
+    render();
+    showToast('Formato inválido. Usa MM:SS o minutos (ej: 25 ó 25:00)');
+  }
+}
+
+function cancelTimerEdit(){
+  if(!timerEditActive)return;
+  timerEditActive=false;
+  $display.contentEditable='false';
+  $display.classList.remove('editable-mode');
+  g('timer-edit-hint').classList.remove('visible');
+  render(); // restaura el valor actual
+}
+
+function parseTimerInput(str){
+  // Acepta: "25", "25:00", "1:30:00", "90"
+  str=str.replace(/[^0-9:]/g,'');
+  const parts=str.split(':');
+  if(parts.length===1){
+    const m=parseInt(parts[0]);
+    return isNaN(m)?null:m*60;
+  }
+  if(parts.length===2){
+    const m=parseInt(parts[0]),s=parseInt(parts[1]);
+    if(isNaN(m)||isNaN(s))return null;
+    return m*60+s;
+  }
+  if(parts.length===3){
+    const h=parseInt(parts[0]),m=parseInt(parts[1]),s=parseInt(parts[2]);
+    if(isNaN(h)||isNaN(m)||isNaN(s))return null;
+    return h*3600+m*60+s;
+  }
+  return null;
+}
+
+$display.addEventListener('keydown',e=>{
+  if(!timerEditActive)return;
+  if(e.key==='Enter'){ e.preventDefault(); commitTimerEdit(); }
+  if(e.key==='Escape'){ e.preventDefault(); cancelTimerEdit(); }
+  // Solo permitir dígitos y ":"
+  if(!/[\d:Backspace Delete ArrowLeft ArrowRight Tab]/.test(e.key) && !e.ctrlKey && !e.metaKey){
+    e.preventDefault();
+  }
+});
+
+$display.addEventListener('blur',()=>{
+  if(timerEditActive) commitTimerEdit();
+});
 // ════════════════════════════════════════════════════════════════
 //  STATS — localStorage
 // ════════════════════════════════════════════════════════════════
@@ -1078,7 +1467,6 @@ function renderXP(){
   g('xp-rank-label').textContent=rank.label;
   g('xp-rank-sub').textContent=rank.sub;
   g('xp-pts').textContent=`${S.xp} pts`;
-  g('xp-streak').textContent=`${getStreak()} días`;
   if(nextXP!==null){
     const base=RANKS[rankIdx].threshold;
     const progress=(S.xp-base)/(nextXP-base)*100;
@@ -1262,47 +1650,6 @@ g('break-panel').addEventListener('click',e=>{
 });
 
 // ════════════════════════════════════════════════════════════════
-//  FLASHCARDS
-// ════════════════════════════════════════════════════════════════
-function parseCards(raw){
-  return raw.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
-    const idx=l.indexOf(':');
-    if(idx<0)return{term:l,def:''};
-    return{term:l.slice(0,idx).trim(),def:l.slice(idx+1).trim()};
-  }).filter(c=>c.term);
-}
-function renderFC(){
-  const cards=S.fcCards;
-  if(!cards.length)return;
-  S.fcFlipped=false;
-  const c=cards[S.fcIdx];
-  g('fc-term').textContent=c.term;
-  g('fc-def').textContent=c.def||'(sin definición)';
-  g('fc-hint').textContent=c.def?'toca para voltear':'';
-  g('fc-card').classList.remove('flipped');
-  g('fc-progress').textContent=`${S.fcIdx+1} / ${cards.length}`;
-}
-g('btn-fc-start').addEventListener('click',()=>{
-  const cards=parseCards(g('fc-input').value);
-  if(!cards.length){showToast('Añade al menos una tarjeta');return;}
-  S.fcCards=cards;S.fcIdx=0;
-  g('fc-setup').style.display='none';
-  g('fc-display').classList.add('active');
-  renderFC();savePersist();
-});
-g('fc-card').addEventListener('click',()=>{
-  if(!S.fcCards[S.fcIdx]?.def)return;
-  S.fcFlipped=!S.fcFlipped;
-  g('fc-card').classList.toggle('flipped',S.fcFlipped);
-  g('fc-hint').textContent=S.fcFlipped?'toca para volver':'toca para voltear';
-});
-g('btn-fc-prev').addEventListener('click',()=>{S.fcIdx=(S.fcIdx-1+S.fcCards.length)%S.fcCards.length;renderFC();});
-g('btn-fc-next').addEventListener('click',()=>{S.fcIdx=(S.fcIdx+1)%S.fcCards.length;renderFC();});
-g('btn-fc-reset').addEventListener('click',()=>{
-  S.fcCards=[];g('fc-setup').style.display='';g('fc-display').classList.remove('active');
-});
-
-// ════════════════════════════════════════════════════════════════
 //  PRESETS (25/5 classic vs 50/10 deep)
 // ════════════════════════════════════════════════════════════════
 const PRESETS={
@@ -1355,8 +1702,11 @@ function tick(){
 }
 function startTimer(){
   if(S.running)return;S.running=true;S.ticker=setInterval(tick,1000);soundStart();render();requestWakeLock();
+  document.body.classList.add('timer-running');
 }
-function pauseTimer(){clearInterval(S.ticker);S.running=false;render();releaseWakeLock();}
+function pauseTimer(){clearInterval(S.ticker);S.running=false;render();releaseWakeLock();
+  document.body.classList.remove('timer-running');
+}
 function resetTimer(){
   pauseTimer();
   if(S.mode==='stopwatch')S.stopwatchSecs=0;
@@ -1366,26 +1716,91 @@ function resetTimer(){
 function togglePlay(){S.running?pauseTimer():startTimer();}
 
 function onComplete(){
-  if(Notification?.permission==='granted')
-    new Notification('focus.',{body:S.mode==='pomodoro'?'¡Pomodoro completo!':'¡Descanso terminado!'});
+  clearInterval(S.ticker);
+  S.running=false;
+  releaseWakeLock();
+
   if(S.mode==='pomodoro'){
-    recordSession('pomodoro',S.durations.pomodoro/60);
+    // Registrar sesión
+    recordSession('pomodoro', S.durations.pomodoro/60);
     markTaskPomo();
-    // XP: +20 per pomodoro
-    addXP(20);
+    addXP(25);
     S.completedSessions=(S.completedSessions+1)%S.maxSessions;
-    if(S.completedSessions===0){
-      showToast('¡4 sesiones! Descanso largo 🎉');switchMode('long');
-    }else{
-      showToast('¡Pomodoro completo! Descansa ☕');switchMode('short');
-    }
     S.session=(S.session%S.maxSessions)+1;
-  }else{
+    soundEnd();
+
+    // Decidir qué break toca
+    const nextMode = S.completedSessions===0 ? 'long' : 'short';
+    switchMode(nextMode);
+
+    // Abrir break panel y arrancar automáticamente
+    openBreakPanel();
+    startTimer();
+
+  } else {
+    // Break terminado — preguntar al usuario
+    soundEnd();
     closeBreakPanel();
-    showToast('¡Al trabajo! 🌿');
     switchMode('pomodoro');
+    render();
+
+    // Cuadro de diálogo no bloqueante usando un toast-modal custom
+    showContinueDialog();
   }
-  render();
+}
+function showContinueDialog(){
+  // Elimina uno anterior si existía
+  const old=document.getElementById('continue-dialog');
+  if(old)old.remove();
+
+  const dlg=document.createElement('div');
+  dlg.id='continue-dialog';
+  dlg.style.cssText=`
+    position:fixed;inset:0;z-index:300;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+  `;
+  dlg.innerHTML=`
+    <div style="
+      background:rgba(20,18,35,0.96);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:22px;padding:32px 36px;
+      text-align:center;max-width:340px;width:90%;
+      box-shadow:0 12px 48px rgba(0,0,0,0.4);
+    ">
+      <div style="font-size:2rem;margin-bottom:10px">🍅</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:600;color:#fff;margin-bottom:6px">
+        ¡Descanso terminado!
+      </div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.55);margin-bottom:24px">
+        ¿Empezamos otro Pomodoro o lo dejamos aquí?
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button id="dlg-stop" style="
+          flex:1;padding:10px 0;border-radius:11px;
+          background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);
+          color:rgba(255,255,255,.7);font-family:'Inter',sans-serif;
+          font-size:.82rem;cursor:pointer;transition:background .2s;
+        ">Terminar por hoy</button>
+        <button id="dlg-continue" style="
+          flex:1;padding:10px 0;border-radius:11px;
+          background:var(--accent);border:none;
+          color:rgba(20,15,35,.9);font-family:'Inter',sans-serif;
+          font-size:.82rem;font-weight:600;cursor:pointer;transition:opacity .2s;
+        ">Continuar →</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(dlg);
+
+  document.getElementById('dlg-continue').addEventListener('click',()=>{
+    dlg.remove();
+    startTimer();           // arranca el nuevo pomodoro directo
+  });
+  document.getElementById('dlg-stop').addEventListener('click',()=>{
+    dlg.remove();
+    showToast('¡Gran trabajo hoy! 💪');
+  });
 }
 function skipTimer(){
   if(S.mode==='stopwatch'&&S.stopwatchSecs>60)recordSession('stopwatch',Math.floor(S.stopwatchSecs/60));
@@ -1426,7 +1841,9 @@ bindSlider($slLong,$vLong,'long');
 document.querySelectorAll('.font-opt').forEach(btn=>{
   btn.addEventListener('click',()=>{
     S.timerFont=btn.dataset.font;
-    document.documentElement.style.setProperty('--timer-font',FONTS[S.timerFont].family);
+    const f=FONTS[S.timerFont];
+    document.documentElement.style.setProperty('--timer-font',f.family);
+    document.getElementById('timer-display').style.fontWeight=f.weight||'600';
     document.querySelectorAll('.font-opt').forEach(b=>b.classList.toggle('active',b===btn));
   });
 });
@@ -1450,7 +1867,10 @@ function buildWpGrid(){
     div.className='wp-thumb'+(wp.id==='custom'?' custom-wp':'')+(S.wallpaper===wp.id?' selected':'');
     div.dataset.id=wp.id;
     if(wp.id==='custom'){
-      div.innerHTML=`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>${wp.label}</span>`;
+    const thumb = wp.type === 'video'
+  ? `<div style="width:100%;height:100%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🎬</div>`
+  : `<img src="${wp.url.replace('w=1600','w=200')}" loading="lazy" alt="${wp.label}">`;
+    div.innerHTML = `${thumb}<span class="wl">${wp.label}</span>`;
       div.addEventListener('click',()=>$customUrlRow.classList.toggle('visible'));
     }else{
       div.innerHTML=`<img src="${wp.url.replace('w=1600','w=200')}" loading="lazy" alt="${wp.label}"><span class="wl">${wp.label}</span>`;
@@ -1459,9 +1879,38 @@ function buildWpGrid(){
     $wpGrid.appendChild(div);
   });
 }
-function setWallpaper(id,url){
-  S.wallpaper=id;$wall.style.backgroundImage=`url('${url}')`;
-  document.querySelectorAll('.wp-thumb').forEach(t=>t.classList.toggle('selected',t.dataset.id===id));
+function setWallpaper(id, url){
+  S.wallpaper = id;
+  const wp = WALLPAPERS.find(w => w.id === id);
+  const type = wp?.type || 'img';
+
+  // Eliminar video anterior si existe
+  const oldVideo = document.getElementById('wp-video');
+  if(oldVideo) oldVideo.remove();
+  $wall.style.backgroundImage = 'none';
+
+  if(type === 'video' && url){
+    // Crear elemento video de fondo
+    const vid = document.createElement('video');
+    vid.id = 'wp-video';
+    vid.src = url;
+    vid.autoplay = true;
+    vid.loop = true;
+    vid.muted = true;
+    vid.playsInline = true;
+    vid.style.cssText = `
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;z-index:0;
+    `;
+    $wall.appendChild(vid);
+    vid.play().catch(()=>{});
+  } else if(url){
+    $wall.style.backgroundImage = `url('${url}')`;
+  }
+
+  document.querySelectorAll('.wp-thumb').forEach(t =>
+    t.classList.toggle('selected', t.dataset.id === id)
+  );
 }
 g('apply-custom-url').addEventListener('click',()=>{
   const url=$customUrlInput.value.trim();if(!url)return;
@@ -1490,11 +1939,53 @@ $minimizeBtn.addEventListener('click',()=>{
 //  QUOTES
 // ════════════════════════════════════════════════════════════════
 let quoteIdx=Math.floor(Math.random()*QUOTES.length);
-$quoteText.textContent=QUOTES[quoteIdx];
-setInterval(()=>{
-  $quoteText.classList.add('fade');
-  setTimeout(()=>{quoteIdx=(quoteIdx+1)%QUOTES.length;$quoteText.textContent=QUOTES[quoteIdx];$quoteText.classList.remove('fade');},500);
-},18000);
+function showQuote(animate=true){
+  const $t=g('quote-text'),$r=g('quote-ref');
+  if(!$t||!$r)return;
+  if(animate){
+    $t.classList.add('fade');$r.classList.add('fade');
+    setTimeout(()=>{
+      $t.textContent=QUOTES[quoteIdx].t;
+      $r.textContent=QUOTES[quoteIdx].r;
+      $t.classList.remove('fade');$r.classList.remove('fade');
+    },420);
+  }else{
+    $t.textContent=QUOTES[quoteIdx].t;
+    $r.textContent=QUOTES[quoteIdx].r;
+  }
+}
+function nextQuote(){quoteIdx=(quoteIdx+1)%QUOTES.length;showQuote();}
+setInterval(nextQuote,30000);
+g('btn-quote-next')?.addEventListener('click',nextQuote);
+
+// Drag
+(function initQuoteDrag(){
+  const bar=g('quote-bar'),handle=g('quote-handle');
+  if(!bar||!handle)return;
+  let dragging=false,ox=0,oy=0;
+  handle.addEventListener('mousedown',e=>{
+    if(e.target.closest('button'))return;
+    dragging=true;
+    ox=e.clientX-bar.getBoundingClientRect().left;
+    oy=e.clientY-bar.getBoundingClientRect().top;
+    bar.style.transform='none';
+    e.preventDefault();
+  });
+  handle.addEventListener('touchstart',e=>{
+    if(e.target.closest('button'))return;
+    const t=e.touches[0];
+    dragging=true;
+    ox=t.clientX-bar.getBoundingClientRect().left;
+    oy=t.clientY-bar.getBoundingClientRect().top;
+    bar.style.transform='none';
+    e.preventDefault();
+  },{passive:false});
+  document.addEventListener('mousemove',e=>{if(!dragging)return;bar.style.left=(e.clientX-ox)+'px';bar.style.top=(e.clientY-oy)+'px';bar.style.bottom='auto';});
+  document.addEventListener('touchmove',e=>{if(!dragging)return;const t=e.touches[0];bar.style.left=(t.clientX-ox)+'px';bar.style.top=(t.clientY-oy)+'px';bar.style.bottom='auto';e.preventDefault();},{passive:false});
+  document.addEventListener('mouseup',()=>{dragging=false;});
+  document.addEventListener('touchend',()=>{dragging=false;});
+})();
+showQuote(false);
 
 // ════════════════════════════════════════════════════════════════
 //  TOAST
@@ -1543,6 +2034,27 @@ const FX={
   stars:{count:()=>Math.floor(S.fxIntensity*1.4),mk(){return{x:Math.random()*$canvas.width,y:Math.random()*$canvas.height,r:Math.random()*1.7+.3,ph:Math.random()*Math.PI*2,phs:Math.random()*.018+.004,bo:Math.random()*.48+.1,vy:-(Math.random()*.07+.008),vx:(Math.random()-.5)*.04};},up(p){p.ph+=p.phs;p.x+=p.vx;p.y+=p.vy;if(p.y<-4)Object.assign(p,{y:$canvas.height+4,x:Math.random()*$canvas.width});},dr(p){const o=p.bo*(.5+.5*Math.sin(p.ph));ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,248,220,${o})`;ctx.fill();if(p.r>1.1){const gd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);gd.addColorStop(0,`rgba(255,248,220,${o*.28})`);gd.addColorStop(1,'rgba(255,248,220,0)');ctx.beginPath();ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);ctx.fillStyle=gd;ctx.fill();}}},
   bubbles:{count:()=>Math.floor(S.fxIntensity*.45),mk(){return{x:Math.random()*$canvas.width,y:$canvas.height+Math.random()*$canvas.height,r:Math.random()*18+6,sp:Math.random()*.55+.28,dr:Math.random()*.7-.35,w:Math.random()*Math.PI*2,op:Math.random()*.16+.05};},up(p){p.y-=p.sp;p.x+=p.dr+Math.sin(p.w)*.45;p.w+=.011;if(p.y<-p.r*2)Object.assign(p,{y:$canvas.height+p.r,x:Math.random()*$canvas.width});},dr(p){ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.strokeStyle=`rgba(255,255,255,${p.op*1.8})`;ctx.lineWidth=.9;ctx.stroke();const gd=ctx.createRadialGradient(p.x-p.r*.28,p.y-p.r*.28,0,p.x,p.y,p.r);gd.addColorStop(0,`rgba(255,255,255,${p.op*1.4})`);gd.addColorStop(.5,`rgba(200,230,255,${p.op*.45})`);gd.addColorStop(1,'rgba(255,255,255,0)');ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=gd;ctx.fill();}},
   dust:{count:()=>Math.floor(S.fxIntensity*1.6),mk(){return{x:Math.random()*$canvas.width,y:Math.random()*$canvas.height,r:Math.random()*1.8+.4,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,ph:Math.random()*Math.PI*2,phs:Math.random()*.022+.007,mo:Math.random()*.5+.18,h:Math.random()*55+200};},up(p){p.x+=p.vx;p.y+=p.vy;p.ph+=p.phs;p.vx+=(Math.random()-.5)*.018;p.vy+=(Math.random()-.5)*.018;p.vx*=.99;p.vy*=.99;if(p.x<0)p.x=$canvas.width;if(p.x>$canvas.width)p.x=0;if(p.y<0)p.y=$canvas.height;if(p.y>$canvas.height)p.y=0;},dr(p){const o=(Math.sin(p.ph)+1)/2*p.mo;const gd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);gd.addColorStop(0,`hsla(${p.h},100%,85%,${o})`);gd.addColorStop(1,`hsla(${p.h},100%,85%,0)`);ctx.beginPath();ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2);ctx.fillStyle=gd;ctx.fill();}},
+  // ── Lluvia suave vertical ──────────────────────────────────────
+  rainsoft:{
+    count:()=>Math.floor(S.fxIntensity*3),
+    mk(){return{x:Math.random()*$canvas.width,y:Math.random()*$canvas.height-$canvas.height,len:Math.random()*22+10,sp:Math.random()*4+6,op:Math.random()*0.18+0.05,w:Math.random()*0.3-0.15};},
+    up(p){p.y+=p.sp;p.x+=p.w;if(p.y>$canvas.height+30)Object.assign(p,{y:-30,x:Math.random()*$canvas.width});},
+    dr(p){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+p.w*2,p.y+p.len);ctx.strokeStyle=`rgba(200,225,255,${p.op})`;ctx.lineWidth=0.6;ctx.stroke();}
+  },
+  // ── Copos de nieve con forma real ─────────────────────────────
+  snowdrift:{
+    count:()=>Math.floor(S.fxIntensity*0.8),
+    mk(){return{x:Math.random()*$canvas.width,y:Math.random()*$canvas.height-$canvas.height,r:Math.random()*5+2,sp:Math.random()*0.4+0.15,dr:Math.random()*0.8-0.4,op:Math.random()*0.4+0.2,w:Math.random()*Math.PI*2,ws:Math.random()*0.008+0.002,rot:Math.random()*Math.PI*2,rs:Math.random()*0.01-0.005};},
+    up(p){p.y+=p.sp;p.w+=p.ws;p.rot+=p.rs;p.x+=p.dr+Math.sin(p.w)*0.6;if(p.y>$canvas.height+10)Object.assign(p,{y:-10,x:Math.random()*$canvas.width});},
+    dr(p){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);for(let i=0;i<6;i++){ctx.save();ctx.rotate(i*Math.PI/3);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-p.r);ctx.strokeStyle=`rgba(255,255,255,${p.op})`;ctx.lineWidth=0.8;ctx.stroke();ctx.beginPath();ctx.moveTo(0,-p.r*0.5);ctx.lineTo(p.r*0.3,-p.r*0.75);ctx.moveTo(0,-p.r*0.5);ctx.lineTo(-p.r*0.3,-p.r*0.75);ctx.strokeStyle=`rgba(255,255,255,${p.op*0.7})`;ctx.stroke();ctx.restore();}ctx.restore();}
+  },
+  // ── Partículas Ghibli ascendentes con estela ──────────────────
+  spirits:{
+    count:()=>Math.floor(S.fxIntensity*0.6),
+    mk(){return{x:Math.random()*$canvas.width,y:$canvas.height+Math.random()*200,r:Math.random()*3+1,sp:Math.random()*0.5+0.2,vx:(Math.random()-0.5)*0.4,ph:Math.random()*Math.PI*2,phs:Math.random()*0.02+0.008,mo:Math.random()*0.6+0.3,h:Math.random()*40+160,trail:[]};},
+    up(p){p.y-=p.sp;p.x+=p.vx+Math.sin(p.ph)*0.5;p.ph+=p.phs;p.vx+=(Math.random()-0.5)*0.03;p.vx*=0.98;p.trail.push({x:p.x,y:p.y});if(p.trail.length>18)p.trail.shift();if(p.y<-20)Object.assign(p,{y:$canvas.height+20,x:Math.random()*$canvas.width,trail:[]});},
+    dr(p){const o=(Math.sin(p.ph)+1)/2*p.mo;p.trail.forEach((pt,i)=>{const to=o*(i/p.trail.length)*0.35;const tr=p.r*(i/p.trail.length)*0.6;if(tr<0.1)return;ctx.beginPath();ctx.arc(pt.x,pt.y,tr,0,Math.PI*2);ctx.fillStyle=`hsla(${p.h},80%,75%,${to})`;ctx.fill();});const gd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);gd.addColorStop(0,`hsla(${p.h},100%,95%,${o})`);gd.addColorStop(0.4,`hsla(${p.h},90%,75%,${o*0.5})`);gd.addColorStop(1,`hsla(${p.h},80%,70%,0)`);ctx.beginPath();ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2);ctx.fillStyle=gd;ctx.fill();}
+  },
 };
 function initFx(name){particles=[];if(name==='none')return;const cfg=FX[name];if(!cfg)return;for(let i=0;i<cfg.count();i++)particles.push(cfg.mk());}
 function setFx(name){S.fx=name;document.querySelectorAll('.fx-opt').forEach(o=>o.classList.toggle('active',o.dataset.fx===name));$fxIntWrap.style.display=name==='none'?'none':'block';initFx(name);}
@@ -1808,6 +2320,69 @@ renderXP();
 // Init position grid as disabled until floating mode is turned on
 document.getElementById('pos-grid').style.opacity='0.4';
 document.getElementById('pos-grid').style.pointerEvents='none';
+// ════════════════════════════════════════════════════════════════
+//  AESTHETIC MODE + AUTO-HIDE UI
+// ════════════════════════════════════════════════════════════════
+
+// ── Auto-hide header on mouse idle ──────────────────────────────
+let uiHideTimer=null;
+function showUI(){
+  document.body.classList.add('show-ui');
+  clearTimeout(uiHideTimer);
+  uiHideTimer=setTimeout(()=>{
+    document.body.classList.remove('show-ui');
+  },3000);
+}
+document.addEventListener('mousemove', showUI);
+document.addEventListener('touchstart', showUI);
+showUI(); // show on load
+
+// ── Aesthetic toggle ─────────────────────────────────────────────
+// ── Keyboard shortcut: A = aesthetic, Q = quote ──────────────────
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.code==='KeyA') document.getElementById('btn-aesthetic')?.click();
+  if(e.code==='KeyQ') document.getElementById('btn-quote-toggle')?.click();
+});
+</script>
+
+<!-- AESTHETIC toggle -->
+<button id="btn-aesthetic" title="Modo aesthetic">✦</button>
+<!-- QUOTE toggle -->
+<button id="btn-quote-toggle" title="Ocultar/mostrar frases">❝</button>
+
+<script>
+// ── Aesthetic toggle ─────────────────────────────────────────────
+document.getElementById('btn-aesthetic').addEventListener('click',()=>{
+  document.body.classList.toggle('aesthetic');
+  if(document.body.classList.contains('aesthetic')){
+    document.body.classList.remove('minimized');
+    // Entrar en pantalla completa
+    const el=document.documentElement;
+    (el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen)?.call(el);
+    showToast('Modo aesthetic ✦');
+  } else {
+    // Salir de pantalla completa
+    (document.exitFullscreen||document.webkitExitFullscreen||document.mozCancelFullScreen||document.msExitFullscreen)?.call(document);
+    showToast('Vista completa');
+  }
+});
+
+// Sincronizar: si el usuario sale de fullscreen con Escape, quitar aesthetic también
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement){
+    document.body.classList.remove('aesthetic');
+  }
+});
+document.addEventListener('webkitfullscreenchange',()=>{
+  if(!document.webkitFullscreenElement){
+    document.body.classList.remove('aesthetic');
+  }
+});
+// ── Quote toggle ─────────────────────────────────────────────────
+document.getElementById('btn-quote-toggle').addEventListener('click',()=>{
+  document.body.classList.toggle('quote-hidden');
+});
 </script>
 <script src="main.js"></script>
 </body>
