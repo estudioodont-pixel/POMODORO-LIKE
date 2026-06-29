@@ -787,6 +787,108 @@ body.aesthetic #btn-quote-show{display:flex!important;opacity:1!important;pointe
 body.aesthetic #btn-quote-close{display:inline-block!important;}
 body.aesthetic #quote-font-dropdown,
 body.aesthetic #quote-style-dropdown{pointer-events:all!important;z-index:300;}
+/* ══ TIMER BG STYLE BAR ══ */
+.timer-bg-bar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:7px 12px;
+  border-radius:14px;
+  background:rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,0.10);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  opacity:0;
+  max-height:0;
+  overflow:hidden;
+  pointer-events:none;
+  transition:opacity .25s ease, max-height .28s cubic-bezier(.4,0,.2,1), padding .25s;
+  width:100%;
+  box-sizing:border-box;
+}
+/* Show on col-timer hover */
+.col-timer:hover .timer-bg-bar{
+  opacity:1;
+  max-height:52px;
+  pointer-events:all;
+}
+/* En aesthetic: col-timer pointer-events:all, así que el hover funciona igual */
+body.aesthetic .col-timer:hover .timer-bg-bar{
+  opacity:1;
+  max-height:52px;
+  pointer-events:all;
+}
+/* Ocultar en modo minimizado */
+body.minimized .timer-bg-bar{display:none!important}
+
+.timer-bg-btn{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:4px 9px;
+  border-radius:9px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.05);
+  color:rgba(255,255,255,0.45);
+  font-size:.68rem;
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+  transition:background .2s,border-color .2s,color .2s;
+  white-space:nowrap;
+  line-height:1;
+}
+.timer-bg-btn:hover{
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+}
+.timer-bg-btn.active{
+  background:rgba(232,196,160,0.15);
+  border-color:rgba(232,196,160,0.40);
+  color:var(--accent);
+}
+.timer-bg-swatch{
+  width:10px;height:10px;border-radius:3px;flex-shrink:0;display:inline-block;
+}
+
+/* ── Timer card BG styles ── */
+/* Default = glass (ya definido en .glass-card / .style-glass) */
+.timer-card.tbg-dark{
+  background:rgba(0,0,0,0.75)!important;
+  border:1px solid rgba(255,255,255,0.08)!important;
+  backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
+  box-shadow:0 8px 40px rgba(0,0,0,0.45)!important;
+}
+.timer-card.tbg-glass{
+  background:rgba(255,255,255,0.09)!important;
+  border:1px solid rgba(255,255,255,0.18)!important;
+  backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important;
+  box-shadow:0 6px 40px rgba(0,0,0,0.20)!important;
+}
+.timer-card.tbg-fog{
+  background:rgba(255,255,255,0.16)!important;
+  border:1px solid rgba(255,255,255,0.26)!important;
+  backdrop-filter:blur(28px)!important;-webkit-backdrop-filter:blur(28px)!important;
+}
+.timer-card.tbg-solid{
+  background:rgba(30,20,55,0.95)!important;
+  border:1px solid var(--accent)!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  box-shadow:0 8px 40px rgba(0,0,0,0.40),0 0 0 1px var(--accent-glow)!important;
+}
+.timer-card.tbg-ghost{
+  background:transparent!important;
+  border:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+
+/* En aesthetic: respetar tbg sobre el transparent forzado por defecto */
+body.aesthetic .timer-card.tbg-dark{background:rgba(0,0,0,0.75)!important;border:1px solid rgba(255,255,255,0.08)!important;backdrop-filter:blur(18px)!important;}
+body.aesthetic .timer-card.tbg-glass{background:rgba(255,255,255,0.09)!important;border:1px solid rgba(255,255,255,0.18)!important;backdrop-filter:blur(22px)!important;}
+body.aesthetic .timer-card.tbg-fog{background:rgba(255,255,255,0.16)!important;border:1px solid rgba(255,255,255,0.26)!important;backdrop-filter:blur(28px)!important;}
+body.aesthetic .timer-card.tbg-solid{background:rgba(30,20,55,0.95)!important;border:1px solid var(--accent)!important;backdrop-filter:none!important;}
+body.aesthetic .timer-card.tbg-ghost{background:transparent!important;border:none!important;backdrop-filter:none!important;box-shadow:none!important;}
+
 /* ══ AESTHETIC TOGGLE BTN ══ */
 #btn-aesthetic{
   position:fixed;
@@ -872,6 +974,25 @@ body.aesthetic #btn-aesthetic{
   <div class="main-layout">
     <!-- TIMER COLUMN -->
     <div class="col-timer">
+      <!-- TIMER BG STYLE BAR -->
+      <div class="timer-bg-bar" id="timer-bg-bar">
+        <button class="timer-bg-btn active" data-tbg="glass">
+          <span class="timer-bg-swatch" style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3)"></span>Glass
+        </button>
+        <button class="timer-bg-btn" data-tbg="dark">
+          <span class="timer-bg-swatch" style="background:#000"></span>Oscuro
+        </button>
+        <button class="timer-bg-btn" data-tbg="fog">
+          <span class="timer-bg-swatch" style="background:rgba(255,255,255,0.32);border:1px solid rgba(255,255,255,0.4)"></span>Neblina
+        </button>
+        <button class="timer-bg-btn" data-tbg="solid">
+          <span class="timer-bg-swatch" style="background:rgba(30,20,55,1);border:1px solid #e8c4a0"></span>Sólido
+        </button>
+        <button class="timer-bg-btn" data-tbg="ghost">
+          <span class="timer-bg-swatch" style="background:transparent;border:1px dashed rgba(255,255,255,0.35)"></span>Fantasma
+        </button>
+      </div>
+
       <div class="timer-card glass-card style-glass" id="timer-card">
         <!-- Tabs -->
         <div class="tabs" role="tablist">
@@ -2521,6 +2642,40 @@ document.addEventListener('webkitfullscreenchange',()=>{
     document.body.classList.remove('aesthetic');
   }
 });
+// ════════════════════════════════════════════════════════════════
+//  TIMER BG STYLE BAR
+// ════════════════════════════════════════════════════════════════
+const TIMER_BG_CLASSES = ['tbg-dark','tbg-glass','tbg-fog','tbg-solid','tbg-ghost'];
+let timerBgStyle = 'glass';
+
+function applyTimerBg(key){
+  timerBgStyle = key;
+  const card = document.getElementById('timer-card');
+  // Remove all tbg- classes
+  TIMER_BG_CLASSES.forEach(c => card.classList.remove(c));
+  // Apply new one (glass is default, no extra class needed but we add it for consistency)
+  card.classList.add('tbg-' + key);
+  // Update active button
+  document.querySelectorAll('[data-tbg]').forEach(b =>
+    b.classList.toggle('active', b.dataset.tbg === key)
+  );
+  try{ localStorage.setItem('focus_timer_bg', key); }catch{}
+}
+
+document.querySelectorAll('[data-tbg]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    applyTimerBg(btn.dataset.tbg);
+  });
+});
+
+// Restore saved timer bg
+try{
+  const savedBg = localStorage.getItem('focus_timer_bg');
+  if(savedBg && TIMER_BG_CLASSES.includes('tbg-' + savedBg)) applyTimerBg(savedBg);
+  else applyTimerBg('glass');
+}catch{ applyTimerBg('glass'); }
+
 // ════════════════════════════════════════════════════════════════
 //  QUOTE WIDGET — style, font, toggle
 // ════════════════════════════════════════════════════════════════
