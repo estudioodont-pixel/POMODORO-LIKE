@@ -54,7 +54,7 @@ function tryInitFirebase() {
 }
 tryInitFirebase();
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=Playfair+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&family=Nunito:wght@200;300;400;600;700;800&family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=Playfair+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;600&family=Nunito:wght@200;300;400;600;700;800&family=Comfortaa:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Sacramento&family=Pacifico&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -72,7 +72,7 @@ tryInitFirebase();
   --break-accent:#7ecfb3;
   --break-glow:rgba(126,207,179,0.32);
 }
-html,body{height:100%;font-family:'Inter',sans-serif;overflow:hidden}
+html,body{height:100%;font-family:'Inter',sans-serif;overflow:visible}
 
 #wallpaper{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;transition:filter 0.8s ease}
 #wallpaper::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(20,15,50,0.42) 0%,rgba(10,25,45,0.30) 50%,rgba(35,15,8,0.38) 100%);transition:background 0.8s ease}
@@ -500,77 +500,82 @@ body.timer-floating .col-right{max-width:680px;margin:0 auto;width:100%;}
   transition:opacity .2s;opacity:0;text-align:center;
 }
 .timer-edit-hint.visible{opacity:1;}
-/* ══ QUOTE WIDGET — draggable & resizable ══ */
+/* ══ QUOTE WIDGET ══ */
 .quote-bar{
   position:fixed;
-  bottom:28px;
-  left:50%;
+  bottom:24px;left:50%;
   transform:translateX(-50%);
-  width:420px;
-  min-width:220px;
-  max-width:90vw;
-  min-height:52px;
-  padding:14px 18px 14px 14px;
-  border-radius:16px;
+  width:400px;min-width:180px;max-width:92vw;
+  padding:10px 14px 8px;
+  border-radius:14px;
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.13);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  cursor:grab;
-  user-select:none;
-  resize:both;
-  overflow:hidden;
-  z-index:15;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  cursor:grab;user-select:none;resize:both;
+  overflow:visible;
+  z-index:15;display:flex;flex-direction:column;gap:4px;
   box-shadow:0 4px 24px rgba(0,0,0,0.18);
-  transition:box-shadow .2s, border-color .2s;
 }
-.quote-bar:active{cursor:grabbing;box-shadow:0 8px 36px rgba(0,0,0,0.32);border-color:rgba(255,255,255,0.22)}
-.quote-bar-handle{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
+.quote-bar:active{cursor:grabbing;}
+
+/* Toolbar — oculta, aparece on hover */
+.quote-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  opacity:0;max-height:0;overflow:hidden;
+  transition:opacity .25s,max-height .25s;
+  pointer-events:none;
 }
-.quote-bar-dots{
-  display:flex;gap:4px;flex-shrink:0;
+.quote-bar:hover .quote-toolbar{
+  opacity:1;max-height:32px;pointer-events:all;
 }
-.quote-bar-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:rgba(255,255,255,0.20);
-}
+.quote-bar-dots{display:flex;gap:3px;align-items:center;}
+.quote-bar-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.18);}
 .quote-bar-label{
-  font-size:.60rem;color:rgba(255,255,255,0.30);
-  text-transform:uppercase;letter-spacing:.1em;
-  font-family:'Inter',sans-serif;
+  font-size:.55rem;color:rgba(255,255,255,0.22);
+  text-transform:uppercase;letter-spacing:.1em;font-family:'Inter',sans-serif;
 }
-.btn-quote-next{
-  background:none;border:none;color:rgba(255,255,255,0.28);
-  cursor:pointer;padding:2px 5px;border-radius:6px;
-  font-size:.75rem;transition:color .2s;flex-shrink:0;
-  line-height:1;
+.quote-actions{display:flex;align-items:center;gap:1px;}
+.btn-quote-action{
+  background:none;border:none;color:rgba(255,255,255,0.30);
+  cursor:pointer;padding:3px 7px;border-radius:6px;
+  font-size:.76rem;transition:color .2s,background .2s;
+  font-family:'Inter',sans-serif;line-height:1;
 }
-.btn-quote-next:hover{color:var(--accent)}
+.btn-quote-action:hover{color:var(--accent);background:rgba(255,255,255,0.08);}
+.quote-size-sep{width:1px;height:11px;background:rgba(255,255,255,0.12);margin:0 2px;}
+
+/* Frase — siempre visible */
 .quote-text{
-  font-size:.82rem;
-  color:rgba(255,255,255,0.72);
-  font-style:italic;
-  line-height:1.55;
-  transition:opacity .4s;
-  cursor:text;
-  user-select:text;
-  flex:1;
+  font-size:.86rem;color:rgba(255,255,255,0.80);
+  font-style:italic;line-height:1.5;
+  transition:opacity .4s,font-size .2s;
+  user-select:text;cursor:text;
 }
 .quote-text.fade{opacity:0}
+
+/* Referencia — siempre visible */
 .quote-ref{
-  font-size:.68rem;
-  color:var(--accent);
+  font-size:.96rem;color:var(--accent);
   font-family:'Space Grotesk',sans-serif;
-  font-style:normal;
-  opacity:.85;
-  text-align:right;
-  transition:opacity .4s;
+  opacity:.80;text-align:right;
+  transition:opacity .3s;
 }
 .quote-ref.fade{opacity:0}
+
+/* Dropdowns — flotan ENCIMA, fuera del widget */
+.quote-dropdown{
+  display:none;flex-wrap:wrap;gap:5px;
+  padding:10px 12px;
+  position:fixed;
+  background:rgba(14,12,28,0.95);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:13px;
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  z-index:200;
+  min-width:220px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.quote-dropdown.open{display:flex;}
 /* Ocultar con minimizar */
 body.minimized .quote-bar{display:none!important}
 /* ══ AESTHETIC MODE ══ */
@@ -590,6 +595,21 @@ body.aesthetic .col-timer{
 }
 body.aesthetic .main-layout{
   pointer-events:none;
+}
+body.aesthetic .quote-bar,
+body.aesthetic .quote-bar *,
+body.aesthetic #quote-font-dropdown,
+body.aesthetic #quote-style-dropdown,
+body.aesthetic #btn-quote-show,
+body.aesthetic #btn-quote-close{
+  pointer-events:all!important;
+}
+body.aesthetic .quote-bar{
+  pointer-events:all!important;
+  cursor:grab;
+}
+body.aesthetic .quote-bar:active{
+  cursor:grabbing;
 }
 body.aesthetic .col-timer{
   pointer-events:all;
@@ -677,13 +697,96 @@ header.hidden{
 body.show-ui #btn-aesthetic{opacity:1;}
 #btn-aesthetic{opacity:0.5!important;}
 #btn-aesthetic:hover{opacity:1!important;}
-body.quote-hidden .quote-bar{
-  transition:opacity .4s;
+body.quote-hidden .quote-bar{opacity:0!important;pointer-events:none!important;visibility:hidden!important;}
+body.quote-hidden #btn-quote-show{display:flex!important;pointer-events:all!important;opacity:1!important;}
+.quote-bar{transition:background .3s,border-color .3s,backdrop-filter .3s,opacity .4s;}
+
+/* quote actions row */
+.quote-actions{display:flex;align-items:center;gap:2px;}
+.btn-quote-action{
+  background:none;border:none;color:rgba(255,255,255,0.28);
+  cursor:pointer;padding:2px 6px;border-radius:6px;
+  font-size:.76rem;transition:color .2s,background .2s;line-height:1;
+  font-family:'Inter',sans-serif;
 }
-.quote-bar{
-  transition:opacity .4s;
+.btn-quote-action:hover{color:var(--accent);background:rgba(255,255,255,0.07);}
+.quote-size-sep{width:1px;height:12px;background:rgba(255,255,255,0.12);margin:0 2px;}
+
+/* quote dropdowns */
+.quote-dropdown{
+  display:none;flex-wrap:wrap;gap:5px;padding:8px 10px;
+  position:absolute;
+  bottom:calc(100% + 8px);
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(18,16,32,0.92);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:12px;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  z-index:20;
+  min-width:220px;
+  box-shadow:0 6px 24px rgba(0,0,0,0.3);
+}
+.quote-dropdown.open{display:flex;}
+.qd-btn{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);
+  border-radius:8px;padding:4px 9px;color:rgba(255,255,255,0.5);
+  font-size:.7rem;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all .2s;
+}
+.qd-btn:hover{background:rgba(255,255,255,0.12);color:#fff;}
+.qd-btn.active{background:rgba(232,196,160,0.15);border-color:var(--accent);color:var(--accent);}
+
+/* quote font previews */
+.qd-btn[data-qfont="dancing"]{font-family:'Dancing Script',cursive;}
+.qd-btn[data-qfont="sacramento"]{font-family:'Sacramento',cursive;}
+.qd-btn[data-qfont="pacifico"]{font-family:'Pacifico',cursive;}
+.qd-btn[data-qfont="cormorant"]{font-family:'Cormorant Garamond',serif;}
+.qd-btn[data-qfont="lora"]{font-family:'Lora',serif;}
+.qd-btn[data-qfont="garamond"]{font-family:'EB Garamond',serif;}
+
+/* quote STYLES */
+.quote-bar.quote-style-glass{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.13);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.quote-bar.quote-style-transparent{
+  background:transparent!important;
+  border:none!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+  padding:4px 6px!important;
+}
+.quote-bar.quote-style-dark{
+  background:rgba(0,0,0,0.55)!important;
+  border:1px solid rgba(255,255,255,0.08)!important;
+  backdrop-filter:blur(8px)!important;
+}
+.quote-bar.quote-style-fog{
+  background:rgba(255,255,255,0.14)!important;
+  border:1px solid rgba(255,255,255,0.22)!important;
+  backdrop-filter:blur(20px)!important;
 }
 
+/* QUOTE SHOW button — aparece cuando quote está oculto */
+#btn-quote-show{
+  position:fixed;bottom:28px;right:28px;z-index:16;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.10);
+  color:rgba(255,255,255,0.30);cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  font-size:.75rem;backdrop-filter:blur(8px);
+  transition:background .2s,color .2s;
+}
+#btn-quote-show:hover{background:rgba(255,255,255,0.12);color:var(--accent);}
+body.quote-hidden #btn-quote-show{display:flex!important;}
+/* en aesthetic, ambos botones visibles */
+body.aesthetic #btn-quote-show{display:flex!important;opacity:1!important;pointer-events:all!important;}
+body.aesthetic #btn-quote-close{display:inline-block!important;}
+body.aesthetic #quote-font-dropdown,
+body.aesthetic #quote-style-dropdown{pointer-events:all!important;z-index:300;}
 /* ══ AESTHETIC TOGGLE BTN ══ */
 #btn-aesthetic{
   position:fixed;
@@ -843,20 +946,48 @@ body.aesthetic #btn-aesthetic{
 
     </div><!-- /col-timer -->
 
-<!-- QUOTE WIDGET — independiente, fuera del col-timer -->
-<div class="quote-bar" id="quote-bar">
-  <div class="quote-bar-handle" id="quote-handle">
+<!-- QUOTE WIDGET -->
+<div class="quote-bar quote-style-glass" id="quote-bar">
+  <!-- Toolbar: visible on hover, fixed position, no layout shift -->
+  <div class="quote-toolbar" id="quote-handle">
     <div class="quote-bar-dots">
       <div class="quote-bar-dot"></div>
       <div class="quote-bar-dot"></div>
       <div class="quote-bar-dot"></div>
     </div>
     <span class="quote-bar-label">versículo</span>
-    <button class="btn-quote-next" id="btn-quote-next" title="Siguiente versículo">›</button>
+    <div class="quote-actions">
+      <button class="btn-quote-action" id="btn-quote-size-down" title="Más pequeño">A-</button>
+      <button class="btn-quote-action" id="btn-quote-size-up" title="Más grande">A+</button>
+      <div class="quote-size-sep"></div>
+      <button class="btn-quote-action" id="btn-quote-font" title="Fuente">Aa</button>
+      <button class="btn-quote-action" id="btn-quote-style-btn" title="Estilo">◐</button>
+      <button class="btn-quote-action" id="btn-quote-next" title="Siguiente">›</button>
+      <button class="btn-quote-action" id="btn-quote-close" title="Ocultar">×</button>
+    </div>
   </div>
+  <!-- Frase y referencia — siempre visibles -->
   <div class="quote-text" id="quote-text"></div>
   <div class="quote-ref" id="quote-ref"></div>
 </div>
+<!-- Dropdowns fuera del widget para evitar overflow issues -->
+<div class="quote-dropdown" id="quote-font-dropdown">
+  <button class="qd-btn active" data-qfont="inter">Inter</button>
+  <button class="qd-btn" data-qfont="dancing">Dancing</button>
+  <button class="qd-btn" data-qfont="sacramento">Sacramento</button>
+  <button class="qd-btn" data-qfont="pacifico">Pacifico</button>
+  <button class="qd-btn" data-qfont="cormorant">Cormorant</button>
+  <button class="qd-btn" data-qfont="lora">Lora</button>
+  <button class="qd-btn" data-qfont="garamond">Garamond</button>
+</div>
+<div class="quote-dropdown" id="quote-style-dropdown">
+  <button class="qd-btn active" data-qstyle="glass">🪟 Glass</button>
+  <button class="qd-btn" data-qstyle="transparent">🫥 Transparente</button>
+  <button class="qd-btn" data-qstyle="dark">⬛ Oscuro</button>
+  <button class="qd-btn" data-qstyle="fog">🌫️ Niebla</button>
+</div>
+<!-- QUOTE SHOW BUTTON -->
+<button id="btn-quote-show" title="Mostrar versículo">❝</button>
 
     <!-- RIGHT COLUMN -->
     <div class="col-right" id="col-right">
@@ -1068,7 +1199,6 @@ const WALLPAPERS=[
   {id:'w8', label:'Cerezo',      type:'img', url:'https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1600&auto=format&fit=crop&q=80'},
   {id:'w9', label:'Noche',       type:'img', url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&auto=format&fit=crop&q=80'},
   {id:'w10',label:'Niebla',      type:'img', url:'https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w11',label:'Ventana',     type:'img', url:'https://images.unsplash.com/photo-1517898717281-8e4385a41802?w=1600&auto=format&fit=crop&q=80'},
   {id:'w13',label:'Estudio',     type:'img', url:'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&auto=format&fit=crop&q=80'},
   {id:'w14',label:'Mar bruma',   type:'img', url:'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=1600&auto=format&fit=crop&q=80'},
   {id:'w15',label:'Tren',        type:'img', url:'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600&auto=format&fit=crop&q=80'},
@@ -1079,18 +1209,18 @@ const WALLPAPERS=[
   {id:'w16', label:'Bosque Brumoso',   type:'img', url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&auto=format&fit=crop&q=80'},
   {id:'w17', label:'Luces Nocturnas',  type:'img', url:'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=1600&auto=format&fit=crop&q=80'},
   {id:'w1',  label:'Bosque de Niebla', type:'img', url:'https://images.unsplash.com/photo-1609678816248-132228a8658b?q=80&w=870&auto=format&fit=crop'},
-  {id:'w2',  label:'Cumbre Nevada',          type:'img', url:'https://images.unsplash.com/photo-1614021926166-f5e89b0bf933?q=80&w=774&auto=format&fit=crop'},
-  {id:'w3',  label:'Mar de Nubes',           type:'img', url:'https://images.unsplash.com/photo-1480561807109-e2aa33f23be8?q=80&w=773&auto=format&fit=crop'},
-  {id:'w4',  label:'Amanecer Dorado',        type:'img', url:'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=870&auto=format&fit=crop'},
-  {id:'w5',  label:'Rocas y Océano',         type:'img', url:'https://images.unsplash.com/photo-1529988885170-6dc8ce34ce6d?q=80&w=774&auto=format&fit=crop'},
-  {id:'w7',  label:'Atardecer',              type:'img', url:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w8',  label:'Gato Místico',           type:'img', url:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w10', label:'Ciudad Nocturna',        type:'img', url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&auto=format&fit=crop&q=80'},
-  {id:'w11', label:'Épico',                  type:'img', url:'https://wallpapercave.com/wp/wp7982608.jpg'},
-  {id:'w12', label:'Arte Fantasía',          type:'img', url:'https://images4.alphacoders.com/132/thumb-1920-1321259.png'},
-  {id:'w13', label:'Universo Cósmico',       type:'img', url:'https://images3.alphacoders.com/132/thumb-1920-1322308.jpeg'},
-  {id:'w14', label:'Anime',                  type:'img', url:'https://images5.alphacoders.com/134/thumb-1920-1344548.png'},
-  {id:'w15', label:'Horizonte Futurista',    type:'img', url:'https://images6.alphacoders.com/138/thumb-1920-1383144.png'},
+  {id:'w2',  label:'Cumbre Nevada',    type:'img', url:'https://images.unsplash.com/photo-1614021926166-f5e89b0bf933?q=80&w=774&auto=format&fit=crop'},
+  {id:'w3',  label:'Mar de Nubes',     type:'img', url:'https://images.unsplash.com/photo-1480561807109-e2aa33f23be8?q=80&w=773&auto=format&fit=crop'},
+  {id:'w4',  label:'Amanecer Dorado',  type:'img', url:'https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=870&auto=format&fit=crop'},
+  {id:'w5',  label:'Rocas y Océano',   type:'img', url:'https://images.unsplash.com/photo-1529988885170-6dc8ce34ce6d?q=80&w=774&auto=format&fit=crop'},
+  {id:'w7',  label:'Atardecer',        type:'img', url:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w8',  label:'Gato Místico',     type:'img', url:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w10', label:'Ciudad Nocturna',  type:'img', url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&auto=format&fit=crop&q=80'},
+  {id:'w11', label:'Épico',            type:'img', url:'https://wallpapercave.com/wp/wp7982608.jpg'},
+  {id:'w12', label:'Arte Fantasía',    type:'img', url:'https://images4.alphacoders.com/132/thumb-1920-1321259.png'},
+  {id:'w13', label:'Universo Cósmico', type:'img', url:'https://images3.alphacoders.com/132/thumb-1920-1322308.jpeg'},
+  {id:'w14', label:'Anime',            type:'img', url:'https://images5.alphacoders.com/134/thumb-1920-1344548.png'},
+  {id:'w15', label:'Horizonte Futurista', type:'img', url:'https://images6.alphacoders.com/138/thumb-1920-1383144.png'},
   {id:'custom', label:'URL…',               type:'img', url:null},
 ];
 const QUOTES=[
@@ -2362,8 +2492,6 @@ document.addEventListener('keydown',e=>{
 
 <!-- AESTHETIC toggle -->
 <button id="btn-aesthetic" title="Modo aesthetic">✦</button>
-<!-- QUOTE toggle -->
-<button id="btn-quote-toggle" title="Ocultar/mostrar frases">❝</button>
 
 <script>
 // ── Aesthetic toggle ─────────────────────────────────────────────
@@ -2393,10 +2521,147 @@ document.addEventListener('webkitfullscreenchange',()=>{
     document.body.classList.remove('aesthetic');
   }
 });
-// ── Quote toggle ─────────────────────────────────────────────────
-document.getElementById('btn-quote-toggle').addEventListener('click',()=>{
-  document.body.classList.toggle('quote-hidden');
+// ════════════════════════════════════════════════════════════════
+//  QUOTE WIDGET — style, font, toggle
+// ════════════════════════════════════════════════════════════════
+const QUOTE_FONTS = {
+  inter:      {family:"'Inter',sans-serif",          style:'normal'},
+  dancing:    {family:"'Dancing Script',cursive",     style:'italic'},
+  sacramento: {family:"'Sacramento',cursive",         style:'normal'},
+  pacifico:   {family:"'Pacifico',cursive",           style:'normal'},
+  cormorant:  {family:"'Cormorant Garamond',serif",   style:'italic'},
+  lora:       {family:"'Lora',serif",                 style:'italic'},
+  garamond:   {family:"'EB Garamond',serif",          style:'italic'},
+};
+
+let quoteFont = 'inter';
+let quoteStyle = 'glass';
+
+function applyQuoteFont(key){
+  quoteFont = key;
+  const f = QUOTE_FONTS[key];
+  const $qt = document.getElementById('quote-text');
+  const $qr = document.getElementById('quote-ref');
+  if($qt){ $qt.style.fontFamily = f.family; $qt.style.fontStyle = f.style; }
+  if($qr){ $qr.style.fontFamily = f.family; }
+  document.querySelectorAll('[data-qfont]').forEach(b=>b.classList.toggle('active',b.dataset.qfont===key));
+  try{ localStorage.setItem('focus_quote_font', key); }catch{}
+}
+
+function applyQuoteStyleClass(key){
+  quoteStyle = key;
+  const bar = document.getElementById('quote-bar');
+  ['quote-style-glass','quote-style-transparent','quote-style-dark','quote-style-fog']
+    .forEach(c=>bar.classList.remove(c));
+  bar.classList.add('quote-style-'+key);
+  document.querySelectorAll('[data-qstyle]').forEach(b=>b.classList.toggle('active',b.dataset.qstyle===key));
+  try{ localStorage.setItem('focus_quote_style', key); }catch{}
+}
+
+// Position and toggle a dropdown near its button
+function toggleQuoteDropdown(btnId, dropId){
+  const fd = document.getElementById('quote-font-dropdown');
+  const sd = document.getElementById('quote-style-dropdown');
+  const drop = document.getElementById(dropId);
+  const other = drop === fd ? sd : fd;
+  const btn = document.getElementById(btnId);
+
+  // Close other
+  other.classList.remove('open');
+
+  if(drop.classList.contains('open')){
+    drop.classList.remove('open');
+    return;
+  }
+
+  // Position dropdown above the button
+  const rect = btn.getBoundingClientRect();
+  drop.style.left = Math.max(8, rect.left - drop.offsetWidth/2 + rect.width/2) + 'px';
+  drop.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+  drop.style.top = 'auto';
+  drop.classList.add('open');
+
+  // Re-position after display so offsetWidth is correct
+  requestAnimationFrame(()=>{
+    const w = drop.offsetWidth;
+    let left = rect.left - w/2 + rect.width/2;
+    left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
+    drop.style.left = left + 'px';
+  });
+}
+
+// Font dropdown toggle
+document.getElementById('btn-quote-font').addEventListener('click', e=>{
+  e.stopPropagation();
+  toggleQuoteDropdown('btn-quote-font','quote-font-dropdown');
 });
+
+// Style dropdown toggle — note: renamed btn id to btn-quote-style-btn
+document.getElementById('btn-quote-style-btn').addEventListener('click', e=>{
+  e.stopPropagation();
+  toggleQuoteDropdown('btn-quote-style-btn','quote-style-dropdown');
+});
+
+// Font selection
+document.querySelectorAll('[data-qfont]').forEach(btn=>{
+  btn.addEventListener('click', e=>{ e.stopPropagation(); applyQuoteFont(btn.dataset.qfont); });
+});
+
+// Style selection
+document.querySelectorAll('[data-qstyle]').forEach(btn=>{
+  btn.addEventListener('click', e=>{ e.stopPropagation(); applyQuoteStyleClass(btn.dataset.qstyle); });
+});
+
+// Close dropdowns clicking outside
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#quote-font-dropdown')&&!e.target.closest('#btn-quote-font'))
+    document.getElementById('quote-font-dropdown').classList.remove('open');
+  if(!e.target.closest('#quote-style-dropdown')&&!e.target.closest('#btn-quote-style-btn'))
+    document.getElementById('quote-style-dropdown').classList.remove('open');
+});
+
+// Close (hide) quote button — works in ALL modes including aesthetic
+document.getElementById('btn-quote-close').addEventListener('click', e=>{
+  e.stopPropagation();
+  e.preventDefault();
+  document.body.classList.add('quote-hidden');
+  document.getElementById('btn-quote-show').style.cssText='display:flex!important;pointer-events:all!important;opacity:1!important;';
+});
+
+// Show quote button — always visible when hidden, including aesthetic
+document.getElementById('btn-quote-show').addEventListener('click', e=>{
+  e.stopPropagation();
+  document.body.classList.remove('quote-hidden');
+  document.getElementById('btn-quote-show').style.cssText='';
+});
+
+// ── Font size control ────────────────────────────────────────────
+const QUOTE_SIZES = ['.68rem','.76rem','.84rem','.94rem','1.05rem','1.2rem','1.4rem'];
+let quoteSizeIdx = 2; // default .84rem
+
+function applyQuoteSize(idx){
+  quoteSizeIdx = Math.max(0, Math.min(QUOTE_SIZES.length-1, idx));
+  const $qt = document.getElementById('quote-text');
+  if($qt) $qt.style.fontSize = QUOTE_SIZES[quoteSizeIdx];
+  try{ localStorage.setItem('focus_quote_size', quoteSizeIdx); }catch{}
+}
+
+document.getElementById('btn-quote-size-up').addEventListener('click', e=>{
+  e.stopPropagation(); applyQuoteSize(quoteSizeIdx+1);
+});
+document.getElementById('btn-quote-size-down').addEventListener('click', e=>{
+  e.stopPropagation(); applyQuoteSize(quoteSizeIdx-1);
+});
+
+// Restore saved font, style & size
+try{
+  const sf = localStorage.getItem('focus_quote_font');
+  if(sf && QUOTE_FONTS[sf]) applyQuoteFont(sf);
+  const ss = localStorage.getItem('focus_quote_style');
+  if(ss) applyQuoteStyleClass(ss);
+  const sz = localStorage.getItem('focus_quote_size');
+  if(sz !== null) applyQuoteSize(+sz);
+}catch{}
 </script>
 <script src="main.js"></script>
 </body>
